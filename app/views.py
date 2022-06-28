@@ -6,8 +6,12 @@ This file creates your application.
 """
 
 from app import app,db,login_manager
+<<<<<<< HEAD
 from .extensions import db, login_manager
 from flask import request, jsonify,g, make_response,send_file, render_template, flash, redirect,url_for
+=======
+from flask import request, jsonify,g, make_response,send_file, flash, redirect, render_template, url_for
+>>>>>>> 9548046e90310211643dea5dfe1563a19d9b61cd
 import os
 from app.models import *
 from flask_wtf.csrf import generate_csrf
@@ -97,7 +101,12 @@ def generate_token(id,name,role):
 
     return token
 
+<<<<<<< HEAD
 """ @app.route('/register', methods=['POST'])
+=======
+@app.route('/register', methods=['POST'])
+@regular_required
+>>>>>>> 9548046e90310211643dea5dfe1563a19d9b61cd
 def register():
     form = RegisterForm()
    
@@ -162,11 +171,11 @@ def load_user(id):
 @app.route('/api/events', methods=['POST','GET'])
 @login_required
 @requires_auth
-def explore():
+@regular_required
+def events():
     # Form data
     if current_user.is_authenticated:
-        if current_user.get_role()=='regular':
-            form = AddEvents()
+            form = AddEventsForm()
 
             # Validate file upload on submit
             if request.method == 'POST' and form.validate_on_submit():
@@ -199,11 +208,81 @@ def explore():
                 return jsonify(title= title, start_date = start_date, start_time=start_time,end_date=end_date,end_time=end_time, description=description,
                 venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
 
+            elif request.method == 'GET':           
+                return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc()).filter_by(userid=current_user.get_id())])
 
 
+<<<<<<< HEAD
             elif request.method == 'GET':           
                 return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc())])
  """
+=======
+@app.route('/api/events/<event_id>', methods=['GET','POST','DELETE'])
+@login_required
+@requires_auth
+@regular_required
+def event_detail(event_id):
+    event_id=event_id
+    if current_user.is_authenticated:
+        if request.method == 'GET':
+            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.id==event_id)]),200
+    
+
+        elif request.method == 'POST':
+            event = db.session.query(Events).get(event_id)
+            
+            form = UpdateEventsForm()
+
+            # Validate file upload on submit
+            if form.validate_on_submit():
+                # Get file data and save to your uploads folder
+                
+                image = form.photo.data
+                filename = secure_filename(image.filename)
+
+                event.title= form.title.data
+                event.start_date = form.start.data
+                event.start_time = form.starttime.data
+                
+                event.end_date= form.end.data
+                event.end_time= form.endtime.data
+                event.description= form.description.data
+                event.venue= form.venue.data
+                event.website_url= request.form['url']
+            
+                status=event.status
+            
+                event.photo = filename
+                uid=current_user.get_id()
+                created_at = event.created_at
+                db.session.commit()
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                
+                return jsonify(title= form.title.data, start_date = form.start.data, start_time=form.starttime.data,end_date=form.end.data,end_time=form.endtime.data, description=form.description.data,
+                venue= form.venue.data,photo = filename, website_url=  request.form['url'], status=status, user_id=uid,created_at= created_at),200
+
+        elif request.method == 'DELETE':  
+                event = db.session.query(Events).get(event_id)
+                db.session.delete(event)
+                db.session.commit()         
+                return jsonify(message="Event Succesfully Deleted"),200
+
+
+@app.route('/api/search', methods=['GET'])
+@login_required
+@requires_auth
+def search():
+    if current_user.is_authenticated:
+        args = request.args
+        date=args.get("date")
+        title=args.get("title")
+
+        if (title=="" or date==""):
+            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
+        return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
+
+
+>>>>>>> 9548046e90310211643dea5dfe1563a19d9b61cd
 
 
 ###
