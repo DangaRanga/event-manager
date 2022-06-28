@@ -236,7 +236,7 @@ def event_detail(event_id):
                 event.venue= form.venue.data
                 event.website_url= request.form['url']
             
-                status="pending"
+                status=event.status
             
                 event.photo = filename
                 uid=current_user.get_id()
