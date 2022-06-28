@@ -265,7 +265,7 @@ def search():
 
         if (title=="" or date==""):
             return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
-        return jsonify(cars=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
+        return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
 
 
 
