@@ -10,13 +10,12 @@ class RegisterForm(FlaskForm):
     photo = FileField('Upload Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Images only!'])])
 
 
-
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
 
 
-class AddEvents(FlaskForm):
+class AddEventsForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
     start_date = StringField('start_date', validators=[DataRequired()])
     start_time = StringField('start_time', validators=[DataRequired()])
@@ -26,4 +25,7 @@ class AddEvents(FlaskForm):
     venue = StringField('venue', validators=[DataRequired()])
     photo = FileField('Upload Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Images only!'])])
     url = StringField('url', validators=[DataRequired()])
-    
+
+#class UpdateEventsForm(FlaskForm):
+
+#class SearchForm(FlaskForm):
