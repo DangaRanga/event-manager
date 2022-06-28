@@ -6,12 +6,8 @@ This file creates your application.
 """
 
 from app import app,db,login_manager
-<<<<<<< HEAD
 from .extensions import db, login_manager
 from flask import request, jsonify,g, make_response,send_file, render_template, flash, redirect,url_for
-=======
-from flask import request, jsonify,g, make_response,send_file, flash, redirect, render_template, url_for
->>>>>>> 9548046e90310211643dea5dfe1563a19d9b61cd
 import os
 from app.models import *
 from flask_wtf.csrf import generate_csrf
