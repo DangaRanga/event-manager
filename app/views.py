@@ -6,13 +6,14 @@ This file creates your application.
 """
 
 from app import app,db,login_manager
-from flask import request, jsonify,g, make_response,send_file
+from .extensions import db, login_manager
+from flask import request, jsonify,g, make_response,send_file, render_template, flash, redirect,url_for
 import os
 from app.models import *
 from flask_wtf.csrf import generate_csrf
 from werkzeug.security import check_password_hash
 from sqlalchemy import or_
-from app.forms import *
+#from app.forms import *
 from werkzeug.utils import secure_filename
 from flask_login import login_user, logout_user, current_user, login_required
 
@@ -96,7 +97,7 @@ def generate_token(id,name,role):
 
     return token
 
-@app.route('/register', methods=['POST'])
+""" @app.route('/register', methods=['POST'])
 def register():
     form = RegisterForm()
    
@@ -202,7 +203,7 @@ def explore():
 
             elif request.method == 'GET':           
                 return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc())])
-
+ """
 
 
 ###

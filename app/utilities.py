@@ -6,7 +6,7 @@ import hashlib
 import app
 import os
 import bcrypt
-from extensions import app_bcrypt
+from .extensions import app_bcrypt
 
 def getTimeNow():
     now = datetime.now()
