@@ -36,6 +36,23 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
 
+def admin_required(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        if current_user.role != 'admin':       
+            flash("You don't have permission to access this resource.", "warning")
+            return redirect(url_for("home"))
+        return func(*args, **kwargs)
+    return decorated_view
+
+def regular_required(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        if current_user.role != 'regular':       
+            flash("You don't have permission to access this resource.", "warning")
+            return redirect(url_for("home"))
+        return func(*args, **kwargs)
+    return decorated_view
 
 def requires_auth(f):
   @wraps(f)
@@ -160,7 +177,10 @@ def explore():
 
                 title= form.title.data
                 start_date = form.start.data
+                start_time = form.starttime.data
+                
                 end_date= form.end.data
+                end_time= form.endtime.data
                 description= form.description.data
                 venue= form.venue.data
                 website_url= request.form['url']
@@ -170,18 +190,18 @@ def explore():
                 photo = filename
                 uid=current_user.get_id()
                 created_at = current_dt.strftime("%Y-%m-%d " + "%X")
-                event = Events(title,start_date,end_date,description,venue,photo,website_url,status,uid,created_at)
+                event = Events(title,start_date,start_time,end_date,end_time,description,venue,photo,website_url,status,uid,created_at)
                 db.session.add(event)
                 db.session.commit()
                 image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 
-                return jsonify(title= title, start_date = start_date, end_date=end_date, description=description,
+                return jsonify(title= title, start_date = start_date, start_time=start_time,end_date=end_date,end_time=end_time, description=description,
                 venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
 
 
 
-        if request.method == 'GET':           
-            return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc())])
+            elif request.method == 'GET':           
+                return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc())])
 
 
 
