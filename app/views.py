@@ -6,14 +6,13 @@ This file creates your application.
 """
 
 from app import app,db,login_manager
-from .extensions import db, login_manager
-from flask import request, jsonify,g, make_response,send_file, render_template, flash, redirect,url_for
+from flask import request, jsonify,g, make_response,send_file, flash, redirect, render_template, url_for
 import os
 from app.models import *
 from flask_wtf.csrf import generate_csrf
 from werkzeug.security import check_password_hash
 from sqlalchemy import or_
-#from app.forms import *
+from app.forms import *
 from werkzeug.utils import secure_filename
 from flask_login import login_user, logout_user, current_user, login_required
 
@@ -97,12 +96,8 @@ def generate_token(id,name,role):
 
     return token
 
-<<<<<<< HEAD
-""" @app.route('/register', methods=['POST'])
-=======
 @app.route('/register', methods=['POST'])
 @regular_required
->>>>>>> 9548046e90310211643dea5dfe1563a19d9b61cd
 def register():
     form = RegisterForm()
    
@@ -205,14 +200,9 @@ def events():
                 venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
 
             elif request.method == 'GET':           
-                return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc()).filter_by(userid=current_user.get_id())])
+                return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc()).filter_by(status='published')])
 
 
-<<<<<<< HEAD
-            elif request.method == 'GET':           
-                return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc())])
- """
-=======
 @app.route('/api/events/<event_id>', methods=['GET','POST','DELETE'])
 @login_required
 @requires_auth
@@ -278,7 +268,6 @@ def search():
         return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
 
 
->>>>>>> 9548046e90310211643dea5dfe1563a19d9b61cd
 
 
 ###

@@ -24,7 +24,7 @@ class Users(db.Model):
         self.profile_photo_url = profile_photo_url
         self.role = role
         self.salt = generated_salt
-        self.created_at = getDateNow()
+        self.created_at = created_at
 
 
          
@@ -57,7 +57,7 @@ class Events(db.Model):
         self.image_url = image_url
         self.website_url = website_url
         self.status = status
-        self.created_at = getDateNow()
+        self.created_at = created_at
 
 
 
