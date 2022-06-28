@@ -203,7 +203,7 @@ def events():
                 return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc()).filter_by(userid=current_user.get_id())])
 
 
-@app.route('/api/events/<event_id>', methods=['GET','PUT','DELETE'])
+@app.route('/api/events/<event_id>', methods=['GET','POST','DELETE'])
 @login_required
 @requires_auth
 @regular_required
