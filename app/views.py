@@ -270,11 +270,12 @@ def admin_event_detail(event_id):
 @admin_required
 def updateEventStatus(event_id, status):
     event = db.session.query(Events).get(event_id)
-    if (event != null and status != ''):
-        event.status = status
-        db.session.commit()
-        return jsonify(message = "Status Successfully Updated"),200
-    return jsonify(message = "Event by id " + event_id + "not found"),404
+    if request.method == 'PATCH':
+        if (event != null and status != ''):
+            event.status = status
+            db.session.commit()
+            return jsonify(message = "Status Successfully Updated"),200
+        return jsonify(message = "Event by id " + event_id + "not found"),404
 
 
 
