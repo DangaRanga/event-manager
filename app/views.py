@@ -273,7 +273,7 @@ def event_detail(event_id):
 def updateEventStatus(event_id, status):
     event = db.session.query(Events).get(event_id)
     if request.method == 'PATCH':
-        if (event != null and status != ''):
+        if event != null and status != '':
             event.status = status
             db.session.commit()
             return jsonify(message = "Status Successfully Updated"),200
