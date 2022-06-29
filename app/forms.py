@@ -29,3 +29,6 @@ class AddEventsForm(FlaskForm):
 #class UpdateEventsForm(FlaskForm):
 
 #class SearchForm(FlaskForm):
+
+class UpdateStatusForm(FlaskForm):
+    status = SelectField('status', choices=[('Pending', 'Pending'), ('Published', 'Published')])

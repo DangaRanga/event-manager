@@ -11,7 +11,7 @@ import os
 from app.models import *
 from flask_wtf.csrf import generate_csrf
 from werkzeug.security import check_password_hash
-from sqlalchemy import or_
+from sqlalchemy import null, or_
 from app.forms import *
 from werkzeug.utils import secure_filename
 from flask_login import login_user, logout_user, current_user, login_required
@@ -141,7 +141,7 @@ def login():
         return jsonify(error="Not Authorized"),401        
 
 @app.route('/auth/logout', methods=['POST','GET'])
-@login_required
+@requires_auth
 def logout():
     logout_user()
     resp= make_response('', 204) 
@@ -203,6 +203,88 @@ def events():
                 return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc()).filter_by(userid=current_user.get_id())])
 
 
+#Admin Endpoint
+@app.route('/api/admin/events', methods=['POST','GET'])
+@login_required
+@requires_auth
+@admin_required
+def events():
+    if current_user.is_authenticated:
+        form = AddEventsForm() 
+        if request.method == 'GET':
+            return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.status.desc())])
+        
+        elif request.method == 'POST'and form.validate_on_submit():
+            # Get file data and save to your uploads folder
+            current_dt = datetime.datetime.now()
+            
+            image = form.photo.data
+            filename = secure_filename(image.filename)
+
+            title= form.title.data
+            start_date = form.start.data
+            start_time = form.starttime.data
+            
+            end_date= form.end.data
+            end_time= form.endtime.data
+            description= form.description.data
+            venue= form.venue.data
+            website_url= request.form['url']
+        
+            status="pending"
+        
+            photo = filename
+            uid=current_user.get_id()
+            created_at = current_dt.strftime("%Y-%m-%d " + "%X")
+            event = Events(title,start_date,start_time,end_date,end_time,description,venue,photo,website_url,status,uid,created_at)
+            db.session.add(event)
+            db.session.commit()
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
+            return jsonify(title= title, start_date = start_date, start_time=start_time,end_date=end_date,end_time=end_time, description=description,
+            venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
+
+
+    
+
+#Admin Endpoint
+@app.route('/api/admin/events/<event_id>', methods=['GET','DELETE'])
+@login_required
+@requires_auth
+@admin_required
+def event_detail(event_id):
+    event_id=event_id
+    if current_user.is_authenticated:
+        if request.method == 'GET':
+            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.id==event_id)]),200
+
+        elif request.method == 'DELETE':  
+                    event = db.session.query(Events).get(event_id)
+                    db.session.delete(event)
+                    db.session.commit()         
+                    return jsonify(message="Event Succesfully Deleted"),200
+
+
+#Admin Endpoint
+@app.route('/api/admin/events/<int:event_id>/status:<string:status>', methods=['PATCH'])
+@login_required
+@requires_auth
+@admin_required
+def updateEventStatus(event_id, status):
+    event = db.session.query(Events).get(event_id)
+    if (event != null and status != ''):
+        event.status = status
+        db.session.commit()
+        return jsonify(message = "Status Successfully Updated"),200
+    return jsonify(message = "Event by id " + event_id + "not found"),404
+
+
+
+
+
+
+
+
 @app.route('/api/events/<event_id>', methods=['GET','POST','DELETE'])
 @login_required
 @requires_auth
@@ -236,7 +318,7 @@ def event_detail(event_id):
                 event.venue= form.venue.data
                 event.website_url= request.form['url']
             
-                status="pending"
+                status=event.status
             
                 event.photo = filename
                 uid=current_user.get_id()
