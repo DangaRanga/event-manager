@@ -5,7 +5,7 @@ from .extensions import db, migrate, app_session, app_bcrypt, login_manager
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
+app.config['SESSION_TYPE'] = 'filesystem'
 db.init_app(app)
 migrate.init_app(app, db)
 app_session.init_app(app)
