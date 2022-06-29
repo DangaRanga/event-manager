@@ -16,6 +16,7 @@ from app.forms import *
 from werkzeug.utils import secure_filename
 from flask_login import login_user, logout_user, current_user, login_required
 
+from .utilities import formatEvents
 
 
 # Using JWT
@@ -59,7 +60,11 @@ def regular_required(func):
 def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
+    #auth = "Bearer "+ request.cookies.get('token', None) 
     auth = "Bearer "+ request.headers['x-access-tokens']
+    #auth = request.headers['Authorization']
+
+    print(auth)
 
     if not auth:
       return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
@@ -122,7 +127,6 @@ def register():
         return jsonify(full_name = full_name, profile_photo = filename,
         email = email,role=role, created_at = created_at),201
 
-    print(form.errors)
     return jsonify(form.errors), 400
 
 @app.route('/auth/login', methods=['POST'])
@@ -141,7 +145,8 @@ def login():
                 resp.set_cookie('token', token, httponly=True, secure=True)
                 resp.set_cookie('user', current_user.get_id(), httponly=False, secure=True)
                 return resp
-        return jsonify(error="Not Authorized"),401        
+        return jsonify(error="Not Authorized"),401   
+    return jsonify(form.errors), 400     
 
 @app.route('/auth/logout', methods=['POST','GET'])
 @requires_auth
@@ -164,56 +169,61 @@ def load_user(id):
 
 
 @app.route('/api/events', methods=['POST','GET'])
-@login_required
+#@login_required
 @requires_auth
-@regular_required
+#@regular_required
 def events():
     # Form data
-    if current_user.is_authenticated:
+    #if current_user.is_authenticated:
             form = AddEventsForm()
 
             # Validate file upload on submit
             if request.method == 'POST' and form.validate_on_submit():
                 # Get file data and save to your uploads folder
                 current_dt = datetime.datetime.now()
-                
+    
                 image = form.photo.data
                 filename = secure_filename(image.filename)
 
                 title= form.title.data
-                start_date = form.start.data
+                start_date = form.startdate.data
                 start_time = form.starttime.data
                 
-                end_date= form.end.data
+                end_date= form.enddate.data
                 end_time= form.endtime.data
                 description= form.description.data
                 venue= form.venue.data
-                website_url= request.form['url']
+                website_url= request.form['website_url']
             
                 status="pending"
             
                 photo = filename
-                uid=current_user.get_id()
+                uid=current_user.get_id() or 6
                 created_at = current_dt.strftime("%Y-%m-%d " + "%X")
-                event = Events(title,start_date,start_time,end_date,end_time,description,venue,photo,website_url,status,uid,created_at)
-                db.session.add(event)
+                event = Events(uid, title, start_date, end_date, start_time,end_time,description,venue,photo,website_url,status)
+                db.session.add(event) 
                 db.session.commit()
                 image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 
                 return jsonify(title= title, start_date = start_date, start_time=start_time,end_date=end_date,end_time=end_time, description=description,
                 venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
 
-            elif request.method == 'GET':           
-                return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc()).filter_by(status='published')])
+            elif request.method == 'GET': 
+                event_query_data = db.session.query(Events).order_by(Events.start_date.desc()).filter_by(status='published').all()
+                response_data = formatEvents(event_query_data)
+    
+                return jsonify(response_data),200
+
+            return jsonify(form.errors), 400
 
 
 #Admin Endpoint
 @app.route('/api/admin/events', methods=['POST','GET'])
-@login_required
+#@login_required
 @requires_auth
-@admin_required
+#@admin_required
 def admin_events():
-    if current_user.is_authenticated:
+    #if current_user.is_authenticated:
         form = AddEventsForm() 
         if request.method == 'GET':
             return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.status.desc())])
@@ -298,6 +308,7 @@ def event_detail(event_id):
     event_id=event_id
     if current_user.is_authenticated:
         if request.method == 'GET':
+            
             return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.id==event_id)]),200
     
         elif request.method == 'POST':

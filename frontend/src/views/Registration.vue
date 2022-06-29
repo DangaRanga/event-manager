@@ -1,15 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div class="home"></div>
-</template>
-
-<script>
-export default {
-  name: "Home",
-  components: {},
-};
-</script>
-=======
     <div class="main-container">
         <div class="register-form-container">
             <form class="register-form" enctype="multipart/form-data" @submit.prevent="registerUser()">
@@ -94,4 +83,3 @@ form{
 }
 
 </style>
->>>>>>> f1da93631d459bc584c421f0770c2a4a9eb9a96a
