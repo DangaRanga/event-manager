@@ -1,26 +1,36 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <section id="upcomingEvents" class="flex justify-around">
+    <event-card
+      :title="'Test Event'"
+      :date="'6/29/2022'"
+      :venue="'Somewhere over the rainbow'"
+    />
+    <event-card
+      :title="'Test Event'"
+      :date="'6/29/2022'"
+      :venue="'Somewhere over the rainbow'"
+    />
+    <event-card
+      :title="'Test Event'"
+      :date="'6/29/2022'"
+      :venue="'Somewhere over the rainbow'"
+    />
+  </section>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
+import EventCard from "./components/events/EventCard.vue";
 export default {
   name: "App",
   components: {
-    HelloWorld,
+    "event-card": EventCard,
   },
 };
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap");
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  font-family: Poppins;
 }
 </style>
