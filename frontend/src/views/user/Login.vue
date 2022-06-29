@@ -51,11 +51,44 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Home",
-  components: {},
-};
+<script setup>
+
+//import { ref } from 'vue';
+
+function registerUser() {
+  const form = document.querySelector(".register-form");
+
+  const form_data = new FormData(form);
+
+  console.log(form_data);
+
+  fetch("http://localhost:8080/register", {
+    method: "POST",
+    body: form_data,
+    headers: {
+      // 'X-CSRFToken': token
+      //
+    },
+    credentials: "same-origin",
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (jsonResponse) {
+      alert(jsonResponse);
+      //if (jsonResponse.status === "error") {
+      //console.log(jsonResponse)
+      //} else {
+      //router.push({ name: 'riderhome'});
+      //}
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+
+
 </script>
 <style scoped>
 #loginImage {
