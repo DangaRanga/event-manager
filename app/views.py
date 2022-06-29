@@ -119,6 +119,7 @@ def register():
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return jsonify(full_name = full_name, profile_photo = filename,
         email = email,role=role, created_at = created_at),201
+    return jsonify(form.errors), 400
 
 @app.route('/auth/login', methods=['POST'])
 def login():
@@ -294,7 +295,6 @@ def event_detail(event_id):
         if request.method == 'GET':
             return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.id==event_id)]),200
     
-
         elif request.method == 'POST':
             event = db.session.query(Events).get(event_id)
             
@@ -347,8 +347,6 @@ def search():
         if (title=="" or date==""):
             return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
         return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
-
-
 
 
 ###
