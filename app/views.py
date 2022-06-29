@@ -119,6 +119,7 @@ def register():
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return jsonify(full_name = full_name, profile_photo = filename,
         email = email,role=role, created_at = created_at),201
+    return jsonify(form.errors), 400
 
 @app.route('/auth/login', methods=['POST'])
 def login():
