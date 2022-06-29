@@ -97,10 +97,8 @@ def generate_token(id,name,role):
     return token
 
 @app.route('/register', methods=['POST'])
-@regular_required
 def register():
     form = RegisterForm()
-   
     if request.method == 'POST' and form.validate_on_submit():
         current_dt = datetime.datetime.now()
         image = form.photo.data
@@ -208,7 +206,7 @@ def events():
 @login_required
 @requires_auth
 @admin_required
-def events():
+def admin_events():
     if current_user.is_authenticated:
         form = AddEventsForm() 
         if request.method == 'GET':
@@ -252,7 +250,7 @@ def events():
 @login_required
 @requires_auth
 @admin_required
-def event_detail(event_id):
+def admin_event_detail(event_id):
     event_id=event_id
     if current_user.is_authenticated:
         if request.method == 'GET':
