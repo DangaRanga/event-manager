@@ -1,36 +1,37 @@
 <template>
-  <section id="upcomingEvents" class="flex justify-around">
-    <event-card
-      :title="'Test Event'"
-      :date="'6/29/2022'"
-      :venue="'Somewhere over the rainbow'"
-    />
-    <event-card
-      :title="'Test Event'"
-      :date="'6/29/2022'"
-      :venue="'Somewhere over the rainbow'"
-    />
-    <event-card
-      :title="'Test Event'"
-      :date="'6/29/2022'"
-      :venue="'Somewhere over the rainbow'"
-    />
-  </section>
+  <div>
+    <navbar />
+    <router-view />
+  </div>
 </template>
 
 <script>
-import EventCard from "./components/events/EventCard.vue";
+import NavBar from "@/components/elements/NavBar.vue";
 export default {
-  name: "App",
   components: {
-    "event-card": EventCard,
+    navbar: NavBar,
   },
 };
 </script>
-
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap");
 #app {
-  font-family: Poppins;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  color: #2c3e50;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>

@@ -1,12 +1,12 @@
 <template>
-  <article>
-    <div id="image">
-      <img :src="''" alt="event image" />
+  <article class="my-4 cursor-pointer">
+    <div id="image" class="mb-2">
+      <img src="" alt="event image" />
     </div>
     <div id="content">
-      <h2 class="font-2xl">{{ title }}</h2>
-      <p>{{ date }}</p>
-      <h3>{{ venue }}</h3>
+      <h2 class="text-lg w-2/3 font-bold">{{ title }}</h2>
+      <h3 class="text-gray-700">{{ venue }}</h3>
+      <p class="text-primary text-sm">{{ date }}</p>
     </div>
   </article>
 </template>
