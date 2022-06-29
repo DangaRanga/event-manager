@@ -295,7 +295,6 @@ def event_detail(event_id):
         if request.method == 'GET':
             return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.id==event_id)]),200
     
-
         elif request.method == 'POST':
             event = db.session.query(Events).get(event_id)
             
@@ -348,8 +347,6 @@ def search():
         if (title=="" or date==""):
             return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
         return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
-
-
 
 
 ###
