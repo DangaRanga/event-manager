@@ -217,6 +217,16 @@ def events():
             return jsonify(form.errors), 400
 
 
+@app.route('/api/events/<user_id>', methods=['GET'])
+@login_required
+@requires_auth
+@regular_required
+def reg_user_event(user_id):
+    user_id=user_id
+    if current_user.is_authenticated:
+        if request.method == 'GET':
+            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.userid==user_id)]),200
+
 #Admin Endpoint
 @app.route('/api/admin/events', methods=['POST','GET'])
 #@login_required
@@ -259,6 +269,15 @@ def admin_events():
             venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
 
 
+@app.route('/api/admin/events/<user_id>', methods=['GET'])
+@login_required
+@requires_auth
+@admin_required
+def admin_user_events(user_id):
+    user_id=user_id
+    if current_user.is_authenticated:
+        if request.method == 'GET':
+            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.userid==user_id)]),200
     
 
 #Admin Endpoint
