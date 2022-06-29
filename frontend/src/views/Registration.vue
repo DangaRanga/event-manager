@@ -21,7 +21,7 @@
             >
             <input
               type="text"
-              class="border-2 py-2 w-full rounded-sm"
+              class="px-2 border-2 py-2 w-full rounded-sm"
               name="fullname"
               maxlength="50"
               id="fullname"
@@ -33,7 +33,7 @@
             >
             <input
               type="text"
-              class="border-2 py-2 w-full rounded-sm"
+              class="px-2 border-2 py-2 w-full rounded-sm"
               name="email"
               maxlength="100"
               id="email"
@@ -45,7 +45,7 @@
             >
             <input
               type="password"
-              class="border-2 py-2 w-full rounded-sm"
+              class="px-2 border-2 py-2 w-full rounded-sm"
               name="password"
               id="password"
             />
