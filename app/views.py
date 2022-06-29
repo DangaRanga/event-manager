@@ -5,7 +5,7 @@ Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
 
-from app import app,db,login_manager
+from app import app,db,login_manager,app_bcrypt
 from flask import request, jsonify,g, make_response,send_file, flash, redirect, render_template, url_for
 import os
 from app.models import *
@@ -15,6 +15,8 @@ from sqlalchemy import null, or_
 from app.forms import *
 from werkzeug.utils import secure_filename
 from flask_login import login_user, logout_user, current_user, login_required
+
+
 
 # Using JWT
 import jwt
@@ -57,7 +59,7 @@ def regular_required(func):
 def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
-    auth = "Bearer "+ request.cookies.get('token', None) 
+    auth = "Bearer "+ request.headers['x-access-tokens']
 
     if not auth:
       return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
@@ -129,10 +131,10 @@ def login():
         email= form.email.data
         password = form.password.data
         user = Users.query.filter_by(email=email).first()
-        
-        if user is not None and check_password_hash(user.password, password):
+
+        if user is not None and app_bcrypt.check_password_hash(user.password, password):
                 login_user(user)    
-                token=generate_token(user.id,user.name,user.role)
+                token=generate_token(user.userid,user.full_name,user.role)
                 resp = make_response(jsonify(error=None, data={'token': "Bearer " +token}, message="Token Generated"))
                 resp.set_cookie('token', token, httponly=True, secure=True)
                 resp.set_cookie('user', current_user.get_id(), httponly=False, secure=True)
@@ -155,7 +157,8 @@ def get_csrf():
 
 @login_manager.user_loader
 def load_user(id):
-    return Users.query.get(int(id))
+    #return Users.query.get(int(id))
+    return Users.query.get(id) #removed it as id is email
 
 
 @app.route('/api/events', methods=['POST','GET'])

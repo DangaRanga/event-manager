@@ -24,17 +24,8 @@ def generateSalt():
     return salt
 
 
-def securePassword(password,salt):
-    salted_password = f"{salt}{password}{salt}"
-    hashed_password = app_bcrypt.generate_password_hash(salted_password)
-    return hashed_password
 
-def checkPassword(password,actual_password,salt):
-    salted_password = f"{salt}{password}{salt}"
-    h = hashlib.new('sha256')
-    h.update(bytes(salted_password, 'utf-8'))
-    return h.hexdigest()==actual_password
-    
+
 
 # def allowed_file(filename):
 #     return '.' in filename and \

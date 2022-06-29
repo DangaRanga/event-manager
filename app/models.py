@@ -1,6 +1,6 @@
 from collections import UserList
-from .extensions import db
-from .utilities import generateSalt, securePassword, getDateNow
+from .extensions import db, app_bcrypt
+from .utilities import generateSalt, getDateNow
 
 
 class Users(db.Model):
@@ -20,11 +20,27 @@ class Users(db.Model):
         generated_salt = generateSalt()
         self.full_name = full_name
         self.email = email
-        self.password = securePassword(password,generated_salt)
+        self.password = app_bcrypt.generate_password_hash(password)
         self.profile_photo_url = profile_photo_url
         self.role = role
         self.salt = generated_salt
         self.created_at = created_at
+
+    def is_active(self):
+        """True, as all users are active."""
+        return True
+
+    def get_id(self):
+        """Return the email address to satisfy Flask-Login's requirements."""
+        return self.email
+
+    def is_authenticated(self):
+        """Return True if the user is authenticated."""
+        return self.authenticated
+
+    def is_anonymous(self):
+        """False, as anonymous users aren't supported."""
+        return False
 
 
          
