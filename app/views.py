@@ -259,10 +259,10 @@ def event_detail(event_id):
             return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.id==event_id)]),200
 
         elif request.method == 'DELETE':  
-                    event = db.session.query(Events).get(event_id)
-                    db.session.delete(event)
-                    db.session.commit()         
-                    return jsonify(message="Event Succesfully Deleted"),200
+            event = db.session.query(Events).get(event_id)
+            db.session.delete(event)
+            db.session.commit()         
+            return jsonify(message="Event Succesfully Deleted"),200
 
 
 #Admin Endpoint
@@ -272,11 +272,12 @@ def event_detail(event_id):
 @admin_required
 def updateEventStatus(event_id, status):
     event = db.session.query(Events).get(event_id)
-    if (event != null and status != ''):
-        event.status = status
-        db.session.commit()
-        return jsonify(message = "Status Successfully Updated"),200
-    return jsonify(message = "Event by id " + event_id + "not found"),404
+    if request.method == 'PATCH':
+        if (event != null and status != ''):
+            event.status = status
+            db.session.commit()
+            return jsonify(message = "Status Successfully Updated"),200
+        return jsonify(message = "Event by id " + event_id + "not found"),404
 
 
 
