@@ -59,7 +59,7 @@ export default {
 </script>
 <style scoped>
 #loginImage {
-  background: url("../assets/loginImg.jpg");
+  background: url("../../assets/loginImg.jpg");
   background-size: cover;
   background-position: center;
 }

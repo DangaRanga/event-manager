@@ -134,7 +134,7 @@ function registerUser() {
 
 <style scoped>
 #registerImage {
-  background: url("../assets/mic.jpg");
+  background: url("../../assets/mic.jpg");
   background-size: cover;
   background-position: center;
 }
