@@ -16,7 +16,7 @@
           @submit.prevent="registerUser()"
         >
           <div class="my-4">
-            <label for="fullname" class="block text-primary text-sm"
+            <label for="fullname" class="block text-primary text-sm mb-1"
               >Full Name</label
             >
             <input
@@ -28,7 +28,9 @@
             />
           </div>
           <div class="my-4">
-            <label for="email" class="block text-primary text-sm">Email</label>
+            <label for="email" class="block text-primary text-sm mb-1"
+              >Email</label
+            >
             <input
               type="text"
               class="border-2 py-2 w-full rounded-sm"
@@ -38,7 +40,7 @@
             />
           </div>
           <div class="my-4">
-            <label for="password" class="block text-primary text-sm"
+            <label for="password" class="block text-primary text-sm mb-1"
               >Password</label
             >
             <input
@@ -77,13 +79,7 @@
                   SVG, PNG, JPG or GIF (MAX. 800x400px)
                 </p>
               </div>
-              <input
-                id="photo"
-                name="photo"
-                multiple="false"
-                type="file"
-                class="hidden"
-              />
+              <input id="photo" name="photo" multiple="false" type="file" />
             </label>
           </div>
 
