@@ -3,6 +3,7 @@ import LandingPage from "@/views/LandingPage";
 import EventsPage from "@/views/EventsPage";
 import Registration from "@/views/Registration";
 import Login from "@/views/Login";
+import EventsDashboard from "@/views/EventsDashboard";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/dashboard",
+    name: "EventsDashboard",
+    component: EventsDashboard,
   },
 ];
 

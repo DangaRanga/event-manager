@@ -1,5 +1,5 @@
 <template>
-  <div class="main-container grid grid-cols-2">
+  <div class="main-container grid grid-cols-2 gap-4">
     <section id="content" class="p-5">
       <header>
         <h1 class="text-4xl font-bold">Create an Account</h1>
@@ -132,4 +132,10 @@ function registerUser() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+#registerImage {
+  background: url("../assets/mic.jpg");
+  background-size: cover;
+  background-position: center;
+}
+</style>
