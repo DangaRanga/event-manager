@@ -2,7 +2,6 @@ from collections import UserList
 from .extensions import db, app_bcrypt
 from .utilities import generateSalt, getDateNow
 
-
 class Users(db.Model):
     __tablename__ = 'users'
     userid = db.Column(db.Integer, primary_key=True)
@@ -31,8 +30,7 @@ class Users(db.Model):
         return True
 
     def get_id(self):
-        """Return the email address to satisfy Flask-Login's requirements."""
-        return self.email
+        return self.userid
 
     def is_authenticated(self):
         """Return True if the user is authenticated."""
@@ -43,8 +41,7 @@ class Users(db.Model):
         return False
 
 
-         
-
+        
 class Events(db.Model):
     __tablename__ = 'events'
     eventid = db.Column(db.Integer, primary_key= True, nullable=False)

@@ -139,11 +139,11 @@ def login():
         user = Users.query.filter_by(email=email).first()
 
         if user is not None and app_bcrypt.check_password_hash(user.password, password):
-                login_user(user)    
+                #login_user(user)    
                 token=generate_token(user.userid,user.full_name,user.role)
                 resp = make_response(jsonify(error=None, data={'token': "Bearer " +token}, message="Token Generated"))
                 resp.set_cookie('token', token, httponly=True, secure=True)
-                resp.set_cookie('user', current_user.get_id(), httponly=False, secure=True)
+                resp.set_cookie('user', user.userid, httponly=False, secure=True)
                 return resp
         return jsonify(error="Not Authorized"),401   
     return jsonify(form.errors), 400     
