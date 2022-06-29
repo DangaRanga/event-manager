@@ -200,7 +200,7 @@ def events():
                 venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
 
             elif request.method == 'GET':           
-                return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc()).filter_by(userid=current_user.get_id())])
+                return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.id.desc()).filter_by(status='published')])
 
 
 #Admin Endpoint
