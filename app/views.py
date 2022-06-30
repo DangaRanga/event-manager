@@ -177,13 +177,11 @@ def get_csrf():
 
 @login_manager.user_loader
 def load_user(id):
-    #return Users.query.get(int(id))
     return Users.query.get(id) #removed it as id is email
 
 
 @app.route('/api/events', methods=['POST','GET'])
 @requires_auth
-#@regular_required
 def events():
     # Form data
     form = AddEventsForm()
@@ -231,10 +229,37 @@ def events():
 
 
 
+@app.route('/api/admin/events', methods=['GET'])
+@requires_auth
+@admin_required
+def admin_events():
+    event_query_data = db.session.query(Events).order_by(Events.start_date.asc()).filter_by(status='pending').all()
+    response_data = formatEvents(event_query_data)
+    return jsonify(response_data),200
+
+#Admin Endpoint
+@app.route('/api/admin/events/<event_id>', methods=['PATCH', 'DELETE']) #Change status publishing
+@requires_auth
+@admin_required
+def admin_event_detail(event_id):
+    event = db.session.query(Events).get(event_id)
+    if request.method == 'DELETE':  
+        db.session.delete(event)
+        db.session.commit()         
+        return jsonify(message="Event Succesfully Deleted"),200
+    
+    elif request.method == 'PATCH':
+        if event != None:
+            event.status = "published"
+            db.session.commit()
+            return jsonify(message = "Status Successfully Updated"),200
+        return jsonify(message = "Event by id " + event_id + "not found"),404
+
+
+
 @app.route('/api/user/<user_id>/events', methods=['GET'])
 @requires_auth
-@regular_required
-def reg_user_event(user_id):
+def user_event(user_id):
     user_id=user_id
     if request.method == 'GET':
         event_query_data = db.session.query(Events).filter(Events.userid==user_id).all()
@@ -242,95 +267,10 @@ def reg_user_event(user_id):
         return jsonify(response_data),200
 
 
-#Admin Endpoint
-@app.route('/api/admin/events', methods=['POST','GET'])
+
+@app.route('/api/events/<event_id>', methods=['GET','POST','DELETE']) #all users can delete and update
 @requires_auth
-#@admin_required
-def admin_events():
-    #if current_user.is_authenticated:
-        form = AddEventsForm() 
-        if request.method == 'GET':
-            return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.status.desc())])
-        
-        elif request.method == 'POST'and form.validate_on_submit():
-            # Get file data and save to your uploads folder
-            current_dt = datetime.datetime.now()
-            
-            image = form.photo.data
-            filename = secure_filename(image.filename)
-
-            title= form.title.data
-            start_date = form.start.data
-            start_time = form.starttime.data
-            
-            end_date= form.end.data
-            end_time= form.endtime.data
-            description= form.description.data
-            venue= form.venue.data
-            website_url= request.form['url']
-        
-            status="pending"
-        
-            photo = filename
-            uid=current_user.get_id()
-            created_at = current_dt.strftime("%Y-%m-%d " + "%X")
-            event = Events(title,start_date,start_time,end_date,end_time,description,venue,photo,website_url,status,uid,created_at)
-            db.session.add(event)
-            db.session.commit()
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            
-            return jsonify(title= title, start_date = start_date, start_time=start_time,end_date=end_date,end_time=end_time, description=description,
-            venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
-
-
-@app.route('/api/admin/events/<user_id>', methods=['GET'])
-@requires_auth
-@admin_required
-def admin_user_events(user_id):
-    user_id=user_id
-    if current_user.is_authenticated:
-        if request.method == 'GET':
-            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.userid==user_id)]),200
-    
-
-#Admin Endpoint
-@app.route('/api/admin/events/<event_id>', methods=['GET','DELETE'])
-@requires_auth
-@admin_required
-def admin_event_detail(event_id):
-    event_id=event_id
-    if current_user.is_authenticated:
-        if request.method == 'GET':
-            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.id==event_id)]),200
-
-        elif request.method == 'DELETE':  
-            event = db.session.query(Events).get(event_id)
-            db.session.delete(event)
-            db.session.commit()         
-            return jsonify(message="Event Succesfully Deleted"),200
-
-
-#Admin Endpoint
-@app.route('/api/admin/events/<int:event_id>/status:<string:status>', methods=['PATCH'])
-@requires_auth
-@admin_required
-def updateEventStatus(event_id, status):
-    event = db.session.query(Events).get(event_id)
-    if request.method == 'PATCH':
-        if (event != null and status != ''):
-            event.status = status
-            db.session.commit()
-            return jsonify(message = "Status Successfully Updated"),200
-        return jsonify(message = "Event by id " + event_id + "not found"),404
-
-
-
-
-@app.route('/api/events/<event_id>', methods=['GET','POST','DELETE'])
-@requires_auth
-@regular_required
 def event_detail(event_id):
-  
     if request.method == 'POST':
         event = db.session.query(Events).get(event_id)
         
@@ -379,14 +319,12 @@ def event_detail(event_id):
 @login_required
 @requires_auth
 def search():
-    if current_user.is_authenticated:
-        args = request.args
-        date=args.get("date")
-        title=args.get("title")
-
-        if (title=="" or date==""):
-            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
-        return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
+    args = request.args
+    date=args.get("date")
+    title=args.get("title")
+    if (title=="" or date==""):
+        return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
+    return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
 
 
 
