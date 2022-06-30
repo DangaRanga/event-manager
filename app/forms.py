@@ -34,7 +34,7 @@ class UpdateEventsForm(FlaskForm):
     endtime = StringField('End Time', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     venue = StringField('Venue', validators=[DataRequired()])
-    photo = FileField('Upload Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Images only!'])])
+    photo = FileField('Upload Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Images only!','jpeg'])])
     url = StringField('Website Url', validators=[DataRequired()])
 
 class SearchForm(FlaskForm):

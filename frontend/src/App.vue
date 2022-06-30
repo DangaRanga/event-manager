@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NavBar :status="status " />
+    <NavBar :status="status" @update="changeLogin" />
     <router-view @update="changeLogin" />
   </div>
 </template>
@@ -17,7 +17,11 @@ changeLogin()
 function changeLogin(){
   if (localStorage.getItem('token')!==null){
     status.value= true
+    return
   }
+  status.value= false
+  return
+
 }
 
 
