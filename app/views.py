@@ -154,7 +154,7 @@ def login():
         if user is not None and app_bcrypt.check_password_hash(user.password, password):
                 #login_user(user)    
                 token=generate_token(user.userid,user.full_name,user.role)
-                resp = make_response(jsonify(error=None, data={'token': "Bearer " +token}, message="Token Generated"))
+                resp = make_response(jsonify(error=None, data={'token': "Bearer " +token},user = {"id":user.userid,"role":user.role}, message="Token Generated"))
                 resp.set_cookie('token', token, httponly=True, secure=True)
                 resp.set_cookie('user', bytes(user.userid), httponly=False, secure=True)
                 return resp
@@ -162,13 +162,13 @@ def login():
     print(form.errors) 
     return jsonify(form.errors), 400     
 
-@app.route('/auth/logout', methods=['POST','GET'])
+@app.route('/auth/logout', methods=['GET'])
 @requires_auth
 def logout():
-    resp= make_response('', 204) 
+    resp= make_response(jsonify(error=None, message='You have been sucessfully logged out.')) 
     resp.delete_cookie('token')
     resp.delete_cookie('user')
-    return resp
+    return resp,204
 
 @app.route('/api/csrf-token', methods=['GET'])
 def get_csrf():
