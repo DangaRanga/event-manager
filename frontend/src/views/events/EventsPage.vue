@@ -13,6 +13,7 @@
         :title="event.title"
         :date="event.start_date"
         :venue="event.venue"
+        :eventid="event.eventid"
         ></EventCard>
 
       </div>

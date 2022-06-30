@@ -54,13 +54,23 @@
               </div>
             </router-link>
           </li>
+          <li v-if="props.status">
+            <router-link to="/events-dashboard">
+              <div
+                class="block py-2 pr-4 pl-3rounded md:bg-transparent hover:text-primary transition ease-in-out delay-150 font-medium"
+                aria-current="page"
+              >
+                My Events
+              </div>
+            </router-link>
+          </li>
           <li>
             <router-link to="/events">
               <div
                 class="block py-2 pr-4 pl-3rounded md:bg-transparent hover:text-primary transition ease-in-out delay-150 font-medium"
                 aria-current="page"
               >
-                Events
+                All Events
               </div>
             </router-link>
           </li>
@@ -89,8 +99,20 @@
     </div>
   </nav>
 </template>
-<script>
-export default {
-  name: "NavBar",
-};
-</script>
+
+<script setup>
+import { defineProps} from "vue";
+
+const props = defineProps({
+  status: Boolean,
+});
+
+// function checkLogin(){
+//   if (localStorage.getItem('token')!==null){
+//     return true
+//   }
+//   return false
+// }
+
+</script>>
+

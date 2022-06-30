@@ -52,7 +52,12 @@
 
 <script setup>
 import router from '../../router';
+import { defineEmits} from "vue";
 //import { ref } from 'vue';
+
+const emit = defineEmits(['update'])
+
+
 
 function loginUser() {
   const loginform = document.querySelector(".login-form");
@@ -80,6 +85,7 @@ function loginUser() {
       if (jsonResponse.error === null){
         localStorage.setItem("token",jsonResponse.data.token);
         alert(jsonResponse.data.token);
+        emit('update')
         router.push({ name: 'EventsPage'});
         
       }else{

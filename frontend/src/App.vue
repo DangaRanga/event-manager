@@ -1,17 +1,26 @@
 <template>
   <div>
-    <navbar />
-    <router-view />
+    <NavBar :status="status " />
+    <router-view @update="changeLogin" />
   </div>
 </template>
 
-<script>
+<script setup>
 import NavBar from "@/components/elements/NavBar.vue";
-export default {
-  components: {
-    navbar: NavBar,
-  },
-};
+import {ref} from 'vue';
+
+
+var status = ref(false)
+
+changeLogin()
+
+function changeLogin(){
+  if (localStorage.getItem('token')!==null){
+    status.value= true
+  }
+}
+
+
 </script>
 <style>
 #app {
