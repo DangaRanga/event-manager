@@ -21,50 +21,60 @@
     <section id="events" class="p-5 my-3">
       <h1 class="text-3xl font-bold">Upcoming Events</h1>
       <div class="grid grid-cols-4 grid-rows-2 my-5">
-        <event-card
-          :imageUrl="'../assets/mic.jpg'"
-          :title="'Open Mic Event at Raggamuffin'"
-          :date="'6/29/2022'"
-          :venue="'Raggamuffin Cafe'"
-        ></event-card>
-        <event-card
-          :imageUrl="'../assets/mic.jpg'"
-          :title="'Open Mic Event at Raggamuffin'"
-          :date="'6/29/2022'"
-          :venue="'Raggamuffin Cafe'"
-        ></event-card>
-        <event-card
-          :imageUrl="'../assets/mic.jpg'"
-          :title="'Open Mic Event at Raggamuffin'"
-          :date="'6/29/2022'"
-          :venue="'Raggamuffin Cafe'"
-        ></event-card>
-        <event-card
-          :imageUrl="'../assets/mic.jpg'"
-          :title="'Open Mic Event at Raggamuffin'"
-          :date="'6/29/2022'"
-          :venue="'Raggamuffin Cafe'"
-        ></event-card>
-        <event-card
-          :imageUrl="'../assets/mic.jpg'"
-          :title="'Open Mic Event at Raggamuffin'"
-          :date="'6/29/2022'"
-          :venue="'Raggamuffin Cafe'"
-        ></event-card>
+        <div v-for="event in events" :key="event.eventid">
+        
+        <EventCard
+        :imageUrl="event.photo"
+        :title="event.title"
+        :date="event.start_date"
+        :venue="event.venue"
+        ></EventCard>
+
+      </div>
       </div>
     </section>
   </div>
 </template>
 
-<script>
+<script setup>
 import EventCard from "@/components/events/EventCard.vue";
 
-export default {
-  name: "LandingPage",
-  components: {
-    "event-card": EventCard,
-  },
-};
+import { ref } from 'vue';
+
+var events = ref([])
+
+getAllEvents()
+
+function getAllEvents(){
+
+  fetch("http://localhost:8080/api/events", {
+    method: "GET",
+    headers: {
+      // 'X-CSRFToken': token
+      'Authorization': localStorage.getItem('token')
+    },
+    credentials: "same-origin",
+  })
+  .then(function (response){
+    if (!response.ok) {
+      alert("HTTP status " + response.status);
+      return
+    }
+    return response.json();
+  })
+  .then(function (jsonResponse) {
+    events.value = jsonResponse.slice(0,4)
+  
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+}
+
+
+
+
 </script>
 <style scoped>
 #banner {

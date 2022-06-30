@@ -2,7 +2,6 @@ from collections import UserList
 from .extensions import db, app_bcrypt
 from .utilities import generateSalt, getDateNow
 
-
 class Users(db.Model):
     __tablename__ = 'users'
     userid = db.Column(db.Integer, primary_key=True)
@@ -31,8 +30,7 @@ class Users(db.Model):
         return True
 
     def get_id(self):
-        """Return the email address to satisfy Flask-Login's requirements."""
-        return self.email
+        return self.userid
 
     def is_authenticated(self):
         """Return True if the user is authenticated."""
@@ -43,8 +41,7 @@ class Users(db.Model):
         return False
 
 
-         
-
+        
 class Events(db.Model):
     __tablename__ = 'events'
     eventid = db.Column(db.Integer, primary_key= True, nullable=False)
@@ -52,8 +49,8 @@ class Events(db.Model):
     title = db.Column(db.String(30))
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
-    start_time = db.Column(db.DateTime)
-    end_time = db.Column(db.DateTime)
+    start_time = db.Column(db.String(10))
+    end_time = db.Column(db.String(10))
     description = db.Column(db.String(500))
     venue = db.Column(db.String(50))
     image_url = db.Column(db.String(100))
@@ -61,7 +58,8 @@ class Events(db.Model):
     status = db.Column(db.String(10))
     created_at= db.Column(db.DateTime)
 
-    def __init__(self, userid, title, start_date, end_date, start_time, end_time, description, venue, image_url, website_url, status, created_at):
+
+    def __init__(self, userid, title, start_date, end_date, start_time, end_time, description, venue, image_url, website_url, status):
         self.userid = userid
         self.title = title
         self.start_date = start_date
@@ -73,7 +71,7 @@ class Events(db.Model):
         self.image_url = image_url
         self.website_url = website_url
         self.status = status
-        self.created_at = created_at
+        self.created_at = getDateNow()
 
 
 
