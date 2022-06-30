@@ -64,7 +64,7 @@
               </div>
             </router-link>
           </li>
-          <li>
+          <li v-if="props.status">
             <router-link to="/events">
               <div
                 class="block py-2 pr-4 pl-3rounded md:bg-transparent hover:text-primary transition ease-in-out delay-150 font-medium"
@@ -74,7 +74,7 @@
               </div>
             </router-link>
           </li>
-          <li>
+          <li v-if="!props.status">
             <router-link to="/register">
               <div
                 class="block py-2 pr-4 pl-3rounded md:bg-transparent hover:text-primary transition ease-in-out delay-150 font-medium"
@@ -84,13 +84,23 @@
               </div>
             </router-link>
           </li>
-          <li>
+          <li v-if="!props.status">
             <router-link to="/login">
               <div
                 class="block py-2 pr-4 pl-3rounded md:bg-transparent hover:text-primary transition ease-in-out delay-150 font-medium"
                 aria-current="page"
               >
                 Login
+              </div>
+            </router-link>
+          </li>
+          <li v-if="props.status">
+            <router-link to="/login" @click.stop.prevent="logout">
+              <div
+                class="block py-2 pr-4 pl-3rounded md:bg-transparent hover:text-primary transition ease-in-out delay-150 font-medium"
+                aria-current="page"
+              >
+                Logout
               </div>
             </router-link>
           </li>
@@ -102,10 +112,26 @@
 
 <script setup>
 import { defineProps} from "vue";
+import router from '../../router';
+import { defineEmits} from "vue";
 
 const props = defineProps({
   status: Boolean,
 });
+
+const emit = defineEmits(['update'])
+
+
+function logout(){
+  localStorage.clear()
+  router.push({ name: 'Login'});
+  emit('update')
+}
+
+
+
+//import { ref } from 'vue';
+
 
 // function checkLogin(){
 //   if (localStorage.getItem('token')!==null){

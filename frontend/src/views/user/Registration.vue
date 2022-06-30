@@ -97,7 +97,11 @@
 
 <script setup>
 //import { ref } from 'vue';
-import router from '../../router';
+import router from "../../router";
+import {
+  dangerNotification,
+  successNotification,
+} from "@/controllers/toasts/toasts";
 
 function registerUser() {
   const form = document.querySelector(".register-form");
@@ -117,20 +121,14 @@ function registerUser() {
   })
     .then(function (response) {
       if (!response.ok) {
-        alert("HTTP status " + response.status);
-        return
+        dangerNotification("HTTP status " + response.status);
+        return;
       }
       return response.json();
-      
     })
-    .then(function (jsonResponse) {
-      alert(jsonResponse);
-      //if (jsonResponse.status === "error") {
-      //console.log(jsonResponse)
-      //} else {
-      //router.push({ name: 'riderhome'});
-      //}
-      router.push({ name: 'Login'});
+    .then(function () {
+      successNotification(`User Successfully Registered. HTTP Response 201`);
+      router.push({ name: "Login" });
     })
     .catch(function (error) {
       console.log(error);

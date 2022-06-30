@@ -52,7 +52,7 @@ import router from "../../router";
 import { defineEmits } from "vue";
 import {
   dangerNotification,
-  sucessNotification,
+  successNotification,
 } from "@/controllers/toasts/toasts";
 
 //import { ref } from 'vue';
@@ -74,21 +74,26 @@ function loginUser() {
   })
     .then(function (response) {
       if (!response.ok) {
-        sucessNotification("HTTP status " + response.status);
+        dangerNotification(
+          `Login attempt unsuccessful. HTTP status ${response.status}`
+        );
         return;
       }
+      successNotification(
+        `User Successfully logged in. HTTP Status ${response.status}`
+      );
       return response.json();
     })
     .then(function (jsonResponse) {
       if (jsonResponse.error === null) {
         localStorage.setItem("token", jsonResponse.data.token);
-        sucessNotification(
-          `Token successfully retrieved ${jsonResponse.data.token}`
-        );
+        localStorage.setItem("userid", jsonResponse.user.id);
+        localStorage.setItem("role", jsonResponse.user.role);
+
         emit("update");
         router.push({ name: "EventsPage" });
       } else {
-        dangerNotification(`Error ${jsonResponse.error}`);
+        alert(jsonResponse.error);
       }
     })
     .catch(function (error) {
