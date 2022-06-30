@@ -24,3 +24,4 @@ node_modules
 
 .env
 .flaskenv
+flask_session/*

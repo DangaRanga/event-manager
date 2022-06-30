@@ -22,16 +22,14 @@
       <h1 class="text-3xl font-bold">Upcoming Events</h1>
       <div class="grid grid-cols-4 grid-rows-2 my-5">
         <div v-for="event in events" :key="event.eventid">
-        
-        <EventCard
-        :imageUrl="event.photo"
-        :title="event.title"
-        :date="event.start_date"
-        :venue="event.venue"
-        :eventid="event.eventid"
-        ></EventCard>
-
-      </div>
+          <EventCard
+            :imageUrl="event.photo"
+            :title="event.title"
+            :date="event.start_date"
+            :venue="event.venue"
+            :eventid="event.eventid"
+          ></EventCard>
+        </div>
       </div>
     </section>
   </div>
@@ -40,42 +38,31 @@
 <script setup>
 import EventCard from "@/components/events/EventCard.vue";
 
-import { ref } from 'vue';
+import { ref } from "vue";
 
-var events = ref([])
+var events = ref([]);
 
-getAllEvents()
+getAllEvents();
 
-function getAllEvents(){
-
+function getAllEvents() {
   fetch("http://localhost:8080/api/events", {
     method: "GET",
     headers: {
-      // 'X-CSRFToken': token
-      'Authorization': localStorage.getItem('token')
+      Authorization: localStorage.getItem("token"),
     },
     credentials: "same-origin",
   })
-  .then(function (response){
-    if (!response.ok) {
-      alert("HTTP status " + response.status);
-      return
-    }
-    return response.json();
-  })
-  .then(function (jsonResponse) {
-    events.value = jsonResponse.slice(0,4)
-  
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-
+    .then(function (response) {
+      if (!response.ok) {
+        alert("HTTP status " + response.status);
+        return;
+      }
+      return response.json();
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 }
-
-
-
-
 </script>
 <style scoped>
 #banner {
