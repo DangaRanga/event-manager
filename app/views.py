@@ -30,8 +30,8 @@ import datetime
 
 @app.route('/')
 def home():
-    """Render website's home page."""
-    return render_template('home.html')
+    """Render API documentation."""
+    return render_template('swaggerui.html')
 
 
 @app.route('/about/')

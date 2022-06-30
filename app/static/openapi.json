@@ -1,0 +1,964 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Eventus",
+    "version": "1.0.0",
+    "description": "This is the API for Eventus"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "summary": "Register a new user",
+      "post": {
+        "summary": "Registers a new user",
+        "description": "Allows a user to register ",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistration"
+              },
+              "examples": {
+                "user-registration": {
+                  "$ref": "#/components/examples/user-registration"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User Successfully registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "examples": {
+                  "user": {
+                    "$ref": "#/components/examples/user"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "register"
+        ]
+      }
+    },
+    "/auth/login": {
+      "summary": "Authenticate a user",
+      "description": "When a user is authenticated a JWT token is generated",
+      "post": {
+        "summary": "Login a user",
+        "description": "",
+        "operationId": "authLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User Successfully logged in"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "summary": "Authenticate a user",
+      "description": "Logout an authenticated user",
+      "post": {
+        "summary": "Logout a user",
+        "description": "",
+        "operationId": "authLogout",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User Successfully logs out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Log out successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      },
+      "get": {
+        "summary": "Get the JWT token from session cookies",
+        "description": "",
+        "operationId": "authLogoutget",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User Successfully logs out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Log out successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/events": {
+      "get": {
+        "summary": "Get a list of all published events",
+        "description": "",
+        "operationId": "getEvents",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Individual Event details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "events"
+        ]
+      },
+      "post": {
+        "summary": "Adds a new event",
+        "description": "",
+        "operationId": "addUserEvent",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewEvent"
+              },
+              "examples": {
+                "NewEvent": {
+                  "$ref": "#/components/examples/NewEvent"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Individual Event details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/events/{event_id}": {
+      "get": {
+        "summary": "Gets details of a specific event",
+        "description": "",
+        "operationId": "getEvent",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "description": "The unique id of the event",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Individual event details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "events"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes details of a specific event",
+        "description": "",
+        "operationId": "deleteEvent",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "description": "The unique id of the event",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Individual event details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "events"
+        ]
+      },
+      "patch": {
+        "summary": "Updates a specific event",
+        "description": "",
+        "operationId": "patchEvent",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "description": "The unique id of the event",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewEvent"
+              },
+              "examples": {
+                "NewEvent": {
+                  "$ref": "#/components/examples/NewEvent"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/user/{user_id}/events": {
+      "get": {
+        "summary": "Gets details of events created by a specific user",
+        "description": "",
+        "operationId": "getUserEvents",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "description": "The unique id of the user",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Event sdetails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/api/admin/events": {
+      "get": {
+        "summary": "Gets details of all events",
+        "description": "",
+        "operationId": "getAdminEvents",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Events details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "summary": "Adds a new event created by an admin",
+        "description": "",
+        "operationId": "addAdminEvent",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewEvent"
+              },
+              "examples": {
+                "NewEvent": {
+                  "$ref": "#/components/examples/NewEvent"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Individual Event details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/events/{user_id}": {
+      "get": {
+        "summary": "Gets details of events created by a specific user (for admins)",
+        "description": "",
+        "operationId": "adminGetUserEvents",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "description": "The unique id of the user",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Events details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/events/{event_id}": {
+      "get": {
+        "summary": "Gets details of a specific event",
+        "description": "",
+        "operationId": "getAdminEvent",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "description": "The unique id of the event",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Individual event details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes details of a specific event",
+        "description": "",
+        "operationId": "deleteAdminEvent",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "description": "The unique id of the event",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Individual event details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/events/{event_id}/status:{status}": {
+      "patch": {
+        "summary": "Updates the status of a specific event",
+        "description": "",
+        "operationId": "patchAdminEvent",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "description": "The unique id of the event",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "status",
+            "description": "The status of the event",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/search": {
+      "get": {
+        "summary": "Gets events based on specified paramters",
+        "description": "",
+        "operationId": "searchEvents",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date",
+            "description": "The start date of the event",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "title",
+            "description": "The title of the event",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Events details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/api/csrf-token": {
+      "get": {
+        "summary": "Generates csrf token",
+        "description": "",
+        "operationId": "getCSRF",
+        "responses": {
+          "200": {
+            "description": "CSRF Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "csrf_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "csrf"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Event": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "end_time": {
+            "type": "string"
+          },
+          "event_id": {
+            "type": "integer"
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "venue": {
+            "type": "string"
+          },
+          "website_url": {
+            "type": "string"
+          }
+        }
+      },
+      "NewEvent": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "end_time": {
+            "type": "string"
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "venue": {
+            "type": "string"
+          },
+          "website_url": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "profile_photo": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "UserRegistration": {
+        "type": "object",
+        "properties": {
+          "fullname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "photo": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "examples": {
+      "user": {
+        "value": {
+          "created_at": "2022-06-29 20:48:02",
+          "email": "LAH@test.com",
+          "full_name": "Lois-Anne Hall",
+          "profile_photo": "Yoga_1_3.png",
+          "role": "regular"
+        }
+      },
+      "user-registration": {
+        "value": {
+          "fullname": "Lois-Anne Hall",
+          "email": "LAH@test.com",
+          "password": "password123",
+          "photo": "Yoga_1_3.png"
+        }
+      },
+      "NewEvent": {
+        "value": {
+          "description": "Just a party!",
+          "end_date": "2022-06-29",
+          "end_time": "Then",
+          "photo": "Yoga_1.jpg",
+          "start_date": "2022-06-29",
+          "start_time": "Now",
+          "status": "pending",
+          "title": "Party",
+          "user_id": 1,
+          "venue": "ABC Sqaure",
+          "website_url": "www.website.com"
+        }
+      },
+      "Event": {
+        "value": {
+          "created_at": "2022-06-29 22:31:09",
+          "description": "Just a party!",
+          "end_date": "2022-06-29",
+          "end_time": "Then",
+          "photo": "Yoga_1.jpg",
+          "start_date": "2022-06-29",
+          "start_time": "Now",
+          "status": "pending",
+          "title": "Party",
+          "user_id": 1,
+          "venue": "ABC Sqaure",
+          "website_url": "www.website.com"
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Enter your JWT Bearer Token",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Access token is missing or invalid"
+      }
+    },
+    "headers": {
+      "Authorization": {
+        "description": "Authorization header with JWT using Bearer Schema",
+        "schema": {
+          "type": "string"
+        },
+        "example": "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjE3NjU1MjAxLCJleHAiOjE2MTc2NjUyMDF9.VDmMnIJzust0ykwP3d7p924VbwPyv0Db3gGiEW7fY7g"
+      }
+    }
+  }
+}
