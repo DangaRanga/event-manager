@@ -22,26 +22,14 @@
       <h1 class="text-3xl font-bold">Upcoming Events</h1>
       <div class="grid grid-cols-4 grid-rows-2 my-5">
         <div v-for="event in events" :key="event.eventid">
-<<<<<<< HEAD
           <EventCard
             :imageUrl="event.photo"
             :title="event.title"
             :date="event.start_date"
             :venue="event.venue"
+            :eventid="event.eventid"
           ></EventCard>
         </div>
-=======
-        
-        <EventCard
-        :imageUrl="event.photo"
-        :title="event.title"
-        :date="event.start_date"
-        :venue="event.venue"
-        :eventid="event.eventid"
-        ></EventCard>
-
-      </div>
->>>>>>> 60c9105a550578da6152e42ad28a93bb7eff7e0b
       </div>
     </section>
   </div>
