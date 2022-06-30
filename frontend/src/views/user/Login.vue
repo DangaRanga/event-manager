@@ -10,10 +10,7 @@
         </p>
       </header>
       <div class="">
-        <form
-          class="login-form"
-          @submit.prevent="loginUser()"
-        >
+        <form class="login-form" @submit.prevent="loginUser()">
           <div class="my-4">
             <label for="email" class="block text-primary text-sm mb-1"
               >Email</label
@@ -51,14 +48,16 @@
 </template>
 
 <script setup>
-import router from '../../router';
-import { defineEmits} from "vue";
+import router from "../../router";
+import { defineEmits } from "vue";
+import {
+  dangerNotification,
+  successNotification,
+} from "@/controllers/toasts/toasts";
+
 //import { ref } from 'vue';
 
-const emit = defineEmits(['update'])
-
-
-
+const emit = defineEmits(["update"]);
 
 function loginUser() {
   const loginform = document.querySelector(".login-form");
@@ -73,35 +72,34 @@ function loginUser() {
     },
     credentials: "same-origin",
   })
-    .then(function (response){
-
+    .then(function (response) {
       if (!response.ok) {
-      alert("HTTP status " + response.status);
-      return
+        dangerNotification(
+          `Login attempt unsuccessful. HTTP status ${response.status}`
+        );
+        return;
       }
+      successNotification(
+        `User Successfully logged in. HTTP Status ${response.status}`
+      );
       return response.json();
     })
     .then(function (jsonResponse) {
+      if (jsonResponse.error === null) {
+        localStorage.setItem("token", jsonResponse.data.token);
+        localStorage.setItem("userid", jsonResponse.user.id);
+        localStorage.setItem("role", jsonResponse.user.role);
 
-      if (jsonResponse.error === null){
-        localStorage.setItem("token",jsonResponse.data.token);
-        localStorage.setItem("userid",jsonResponse.user.id);
-        localStorage.setItem("role",jsonResponse.user.role);
-
-        emit('update')
-        router.push({ name: 'EventsPage'});
-        
-      }else{
-        alert(jsonResponse.error)
+        emit("update");
+        router.push({ name: "EventsPage" });
+      } else {
+        alert(jsonResponse.error);
       }
     })
     .catch(function (error) {
       console.log(error);
     });
 }
-
-
-
 </script>
 <style scoped>
 #loginImage {
