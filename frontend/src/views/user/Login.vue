@@ -10,10 +10,7 @@
         </p>
       </header>
       <div class="">
-        <form
-          class="login-form"
-          @submit.prevent="loginUser()"
-        >
+        <form class="login-form" @submit.prevent="loginUser()">
           <div class="my-4">
             <label for="email" class="block text-primary text-sm mb-1"
               >Email</label
@@ -51,13 +48,16 @@
 </template>
 
 <script setup>
-import router from '../../router';
-import { defineEmits} from "vue";
+import router from "../../router";
+import { defineEmits } from "vue";
+import {
+  dangerNotification,
+  sucessNotification,
+} from "@/controllers/toasts/toasts";
+
 //import { ref } from 'vue';
 
-const emit = defineEmits(['update'])
-
-
+const emit = defineEmits(["update"]);
 
 function loginUser() {
   const loginform = document.querySelector(".login-form");
@@ -72,33 +72,29 @@ function loginUser() {
     },
     credentials: "same-origin",
   })
-    .then(function (response){
-
+    .then(function (response) {
       if (!response.ok) {
-      alert("HTTP status " + response.status);
-      return
+        sucessNotification("HTTP status " + response.status);
+        return;
       }
       return response.json();
     })
     .then(function (jsonResponse) {
-
-      if (jsonResponse.error === null){
-        localStorage.setItem("token",jsonResponse.data.token);
-        alert(jsonResponse.data.token);
-        emit('update')
-        router.push({ name: 'EventsPage'});
-        
-      }else{
-        alert(jsonResponse.error)
+      if (jsonResponse.error === null) {
+        localStorage.setItem("token", jsonResponse.data.token);
+        sucessNotification(
+          `Token successfully retrieved ${jsonResponse.data.token}`
+        );
+        emit("update");
+        router.push({ name: "EventsPage" });
+      } else {
+        dangerNotification(`Error ${jsonResponse.error}`);
       }
     })
     .catch(function (error) {
       console.log(error);
     });
 }
-
-
-
 </script>
 <style scoped>
 #loginImage {
