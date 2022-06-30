@@ -8,18 +8,13 @@
         Create Event
       </button>
     </article>
-    <event-table />
+    <EventTable />
   </div>
 </template>
 
-<script>
+<script setup>
 import EventTable from "@/components/events/EventTable";
-export default {
-  name: "UserProfile",
-  components: {
-    "event-table": EventTable,
-  },
-};
+
 </script>
 
 <style scoped></style>

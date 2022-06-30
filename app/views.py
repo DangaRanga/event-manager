@@ -22,7 +22,7 @@ from .utilities import formatEvents
 # Using JWT
 import jwt
 from functools import wraps
-import datetime
+from datetime import datetime
 
 ###
 # Routing for your application.
@@ -30,8 +30,8 @@ import datetime
 
 @app.route('/')
 def home():
-    """Render website's home page."""
-    return render_template('home.html')
+    """Render API documentation."""
+    return render_template('swaggerui.html')
 
 
 @app.route('/about/')
@@ -108,6 +108,17 @@ def generate_token(id,name,role):
 
     return token
 
+def get_current_id(jwt_token):
+    encoded_jwt = jwt_token.split()[1]
+    decoded_jwt = jwt.decode(encoded_jwt, app.config['SECRET_KEY'], algorithms=["HS256"])
+    return decoded_jwt.get('sub')
+
+def filefunc(img):
+    now = datetime.now().strftime("%m%d%Y%H%M%S%f")
+    ext = secure_filename(img.filename).split(".")[-1]
+    a = f"{now}.{ext}"
+    return a
+
 @app.route('/register', methods=['POST'])
 def register(): 
     """
@@ -115,9 +126,9 @@ def register():
     """
     form = RegisterForm()
     if request.method == 'POST' and form.validate_on_submit():
-        current_dt = datetime.datetime.now()
+        current_dt = datetime.now()
         image = form.photo.data
-        filename = secure_filename(image.filename)
+        filename = filefunc(image)
     
         password = form.password.data 
         full_name = form.fullname.data
@@ -172,16 +183,15 @@ def get_csrf():
 
 @login_manager.user_loader
 def load_user(id):
-    #return Users.query.get(int(id))
     return Users.query.get(id) #removed it as id is email
 
 
 @app.route('/api/events', methods=['POST','GET'])
 @requires_auth
-#@regular_required
 def events():
     # Form data
     form = AddEventsForm()
+    jwt_token = request.headers['Authorization']
 
     # Validate file upload on submit
     if request.method == 'POST' and form.validate_on_submit():
@@ -189,7 +199,7 @@ def events():
         current_dt = datetime.datetime.now()
 
         image = form.photo.data
-        filename = secure_filename(image.filename)
+        filename = filefunc(image)
 
         title= form.title.data
         start_date = form.startdate.data
@@ -204,7 +214,7 @@ def events():
         status="pending"
     
         photo = filename
-        uid=current_user.get_id() or 6
+        uid= get_current_id(jwt_token)
         created_at = current_dt.strftime("%Y-%m-%d " + "%X")
         event = Events(uid, title, start_date, end_date, start_time,end_time,description,venue,photo,website_url,status)
         db.session.add(event) 
@@ -225,171 +235,102 @@ def events():
 
 
 
-@app.route('/api/user/<user_id>/events', methods=['GET'])
-@login_required
-@requires_auth
-@regular_required
-def reg_user_event(user_id):
-    user_id=user_id
-    if current_user.is_authenticated:
-        if request.method == 'GET':
-            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.userid==user_id)]),200
-
-#Admin Endpoint
-@app.route('/api/admin/events', methods=['POST','GET'])
-#@login_required
-@requires_auth
-#@admin_required
-def admin_events():
-    #if current_user.is_authenticated:
-        form = AddEventsForm() 
-        if request.method == 'GET':
-            return jsonify(events=[i.serialize() for i in  db.session.query(Events).order_by(Events.status.desc())])
-        
-        elif request.method == 'POST'and form.validate_on_submit():
-            # Get file data and save to your uploads folder
-            current_dt = datetime.datetime.now()
-            
-            image = form.photo.data
-            filename = secure_filename(image.filename)
-
-            title= form.title.data
-            start_date = form.start.data
-            start_time = form.starttime.data
-            
-            end_date= form.end.data
-            end_time= form.endtime.data
-            description= form.description.data
-            venue= form.venue.data
-            website_url= request.form['url']
-        
-            status="pending"
-        
-            photo = filename
-            uid=current_user.get_id()
-            created_at = current_dt.strftime("%Y-%m-%d " + "%X")
-            event = Events(title,start_date,start_time,end_date,end_time,description,venue,photo,website_url,status,uid,created_at)
-            db.session.add(event)
-            db.session.commit()
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            
-            return jsonify(title= title, start_date = start_date, start_time=start_time,end_date=end_date,end_time=end_time, description=description,
-            venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
-
-
-@app.route('/api/admin/events/<user_id>', methods=['GET'])
-@login_required
+@app.route('/api/admin/events', methods=['GET'])
 @requires_auth
 @admin_required
-def admin_user_events(user_id):
-    user_id=user_id
-    if current_user.is_authenticated:
-        if request.method == 'GET':
-            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.userid==user_id)]),200
-    
+def admin_events():
+    event_query_data = db.session.query(Events).order_by(Events.start_date.asc()).filter_by(status='pending').all()
+    response_data = formatEvents(event_query_data)
+    return jsonify(response_data),200
 
 #Admin Endpoint
-@app.route('/api/admin/events/<event_id>', methods=['GET','DELETE'])
-@login_required
+@app.route('/api/admin/events/<event_id>', methods=['PATCH', 'DELETE']) #Change status publishing
 @requires_auth
 @admin_required
 def admin_event_detail(event_id):
-    event_id=event_id
-    if current_user.is_authenticated:
-        if request.method == 'GET':
-            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.id==event_id)]),200
-
-        elif request.method == 'DELETE':  
-            event = db.session.query(Events).get(event_id)
-            db.session.delete(event)
-            db.session.commit()         
-            return jsonify(message="Event Succesfully Deleted"),200
-
-
-#Admin Endpoint
-@app.route('/api/admin/events/<int:event_id>/status:<string:status>', methods=['PATCH'])
-@login_required
-@requires_auth
-@admin_required
-def updateEventStatus(event_id, status):
     event = db.session.query(Events).get(event_id)
-    if request.method == 'PATCH':
-        if (event != null and status != ''):
-            event.status = status
+    if request.method == 'DELETE':  
+        db.session.delete(event)
+        db.session.commit()         
+        return jsonify(message="Event Succesfully Deleted"),200
+    
+    elif request.method == 'PATCH':
+        if event != None:
+            event.status = "published"
             db.session.commit()
             return jsonify(message = "Status Successfully Updated"),200
         return jsonify(message = "Event by id " + event_id + "not found"),404
 
 
 
-
-
-
-
-
-@app.route('/api/events/<event_id>', methods=['GET','POST','DELETE'])
-@login_required
+@app.route('/api/user/<user_id>/events', methods=['GET'])
 @requires_auth
-@regular_required
+def user_event(user_id):
+    user_id=user_id
+    if request.method == 'GET':
+        event_query_data = db.session.query(Events).filter(Events.userid==user_id).all()
+        response_data = formatEvents(event_query_data)
+        return jsonify(response_data),200
+
+
+
+@app.route('/api/events/<event_id>', methods=['GET','POST','DELETE']) #all users can delete and update
+@requires_auth
 def event_detail(event_id):
-    event_id=event_id
-    if current_user.is_authenticated:
-        if request.method == 'GET':
+    if request.method == 'POST':
+        event = db.session.query(Events).get(event_id)
+        
+        form = UpdateEventsForm()
+
+        # Validate file upload on submit
+        if form.validate_on_submit():
+            # Get file data and save to your uploads folder
             
-            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.id==event_id)]),200
-    
-        elif request.method == 'POST':
+            image = form.photo.data
+            filename = filefunc(image)
+
+            event.title= form.title.data
+            event.start_date = form.start.data
+            event.start_time = form.starttime.data
+            
+            event.end_date= form.end.data
+            event.end_time= form.endtime.data
+            event.description= form.description.data
+            event.venue= form.venue.data
+            event.website_url= request.form['url']
+        
+            status=event.status
+        
+            event.photo = filename
+            uid=current_user.get_id()
+            created_at = event.created_at
+            db.session.commit()
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
+            return jsonify(title= form.title.data, start_date = form.start.data, start_time=form.starttime.data,end_date=form.end.data,end_time=form.endtime.data, description=form.description.data,
+            venue= form.venue.data,photo = filename, website_url=  request.form['url'], status=status, user_id=uid,created_at= created_at),200
+
+    elif request.method == 'DELETE':  
             event = db.session.query(Events).get(event_id)
-            
-            form = UpdateEventsForm()
+            db.session.delete(event)
+            db.session.commit()         
+            return jsonify(message="Event Succesfully Deleted"),200
 
-            # Validate file upload on submit
-            if form.validate_on_submit():
-                # Get file data and save to your uploads folder
-                
-                image = form.photo.data
-                filename = secure_filename(image.filename)
-
-                event.title= form.title.data
-                event.start_date = form.start.data
-                event.start_time = form.starttime.data
-                
-                event.end_date= form.end.data
-                event.end_time= form.endtime.data
-                event.description= form.description.data
-                event.venue= form.venue.data
-                event.website_url= request.form['url']
-            
-                status=event.status
-            
-                event.photo = filename
-                uid=current_user.get_id()
-                created_at = event.created_at
-                db.session.commit()
-                image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                
-                return jsonify(title= form.title.data, start_date = form.start.data, start_time=form.starttime.data,end_date=form.end.data,end_time=form.endtime.data, description=form.description.data,
-                venue= form.venue.data,photo = filename, website_url=  request.form['url'], status=status, user_id=uid,created_at= created_at),200
-
-        elif request.method == 'DELETE':  
-                event = db.session.query(Events).get(event_id)
-                db.session.delete(event)
-                db.session.commit()         
-                return jsonify(message="Event Succesfully Deleted"),200
+    event_query_data = db.session.query(Events).filter(Events.eventid==event_id).all()
+    response_data = formatEvents(event_query_data)[0]
+    return jsonify(response_data),200
 
 
 @app.route('/api/search', methods=['GET'])
 @login_required
 @requires_auth
 def search():
-    if current_user.is_authenticated:
-        args = request.args
-        date=args.get("date")
-        title=args.get("title")
-
-        if (title=="" or date==""):
-            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
-        return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
+    args = request.args
+    date=args.get("date")
+    title=args.get("title")
+    if (title=="" or date==""):
+        return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
+    return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
 
 
 

@@ -37,7 +37,7 @@ const routes = [
 
   // To be changed once events are dynamic
   {
-    path: "/event-details",
+    path: "/event-details/:eventid",
     name: "EventDetails",
     component: EventDetails,
   },
