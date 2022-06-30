@@ -259,6 +259,7 @@ def admin_events():
             venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
 
 
+#Admin Endpoint
 @app.route('/api/admin/events/<user_id>', methods=['GET'])
 @login_required
 @requires_auth
