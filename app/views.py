@@ -22,7 +22,7 @@ from .utilities import formatEvents
 # Using JWT
 import jwt
 from functools import wraps
-import datetime
+from datetime import datetime
 
 ###
 # Routing for your application.
@@ -114,8 +114,7 @@ def get_current_id(jwt_token):
     return decoded_jwt.get('sub')
 
 def filefunc(img):
-    now = datetime.now()
-    now.strftime("%m%d%Y%H%M%S%f")
+    now = datetime.now().strftime("%m%d%Y%H%M%S%f")
     ext = secure_filename(img.filename).split(".")[-1]
     a = f"{now}.{ext}"
     return a
@@ -127,7 +126,7 @@ def register():
     """
     form = RegisterForm()
     if request.method == 'POST' and form.validate_on_submit():
-        current_dt = datetime.datetime.now()
+        current_dt = datetime.now()
         image = form.photo.data
         filename = filefunc(image)
     
