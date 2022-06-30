@@ -11,9 +11,8 @@
       </header>
       <div class="">
         <form
-          class="register-form"
-          enctype="multipart/form-data"
-          @submit.prevent="registerUser()"
+          class="login-form"
+          @submit.prevent="loginUser()"
         >
           <div class="my-4">
             <label for="email" class="block text-primary text-sm mb-1"
@@ -52,35 +51,40 @@
 </template>
 
 <script setup>
-
+import router from '../../router';
 //import { ref } from 'vue';
 
-function registerUser() {
-  const form = document.querySelector(".register-form");
+function loginUser() {
+  const loginform = document.querySelector(".login-form");
 
-  const form_data = new FormData(form);
+  const form_data = new FormData(loginform);
 
-  console.log(form_data);
-
-  fetch("http://localhost:8080/register", {
+  fetch("http://localhost:8080/auth/login", {
     method: "POST",
     body: form_data,
     headers: {
       // 'X-CSRFToken': token
-      //
     },
     credentials: "same-origin",
   })
-    .then(function (response) {
+    .then(function (response){
+
+      if (!response.ok) {
+      alert("HTTP status " + response.status);
+      return
+      }
       return response.json();
     })
     .then(function (jsonResponse) {
-      alert(jsonResponse);
-      //if (jsonResponse.status === "error") {
-      //console.log(jsonResponse)
-      //} else {
-      //router.push({ name: 'riderhome'});
-      //}
+
+      if (jsonResponse.error === null){
+        localStorage.setItem("token",jsonResponse.data.token);
+        alert(jsonResponse.data.token);
+        router.push({ name: 'EventsPage'});
+        
+      }else{
+        alert(jsonResponse.error)
+      }
     })
     .catch(function (error) {
       console.log(error);

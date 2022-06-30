@@ -1,7 +1,7 @@
 <template>
   <article class="my-4 cursor-pointer hover:shadow-md w-2/3 p-3 py-3">
     <div id="image" class="mb-2">
-      <img src="" alt="event image" />
+      <img :src="imageUrl" alt="event image" />
     </div>
     <div id="content">
       <h2 class="text-lg font-bold">{{ title }}</h2>
@@ -23,4 +23,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+img{
+  width: 150px;
+  height:150px;
+}
+
+</style>

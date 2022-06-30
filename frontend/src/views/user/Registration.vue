@@ -97,7 +97,7 @@
 
 <script setup>
 //import { ref } from 'vue';
-//import router from '../routers';
+import router from '../../router';
 
 function registerUser() {
   const form = document.querySelector(".register-form");
@@ -116,7 +116,12 @@ function registerUser() {
     credentials: "same-origin",
   })
     .then(function (response) {
+      if (!response.ok) {
+        alert("HTTP status " + response.status);
+        return
+      }
       return response.json();
+      
     })
     .then(function (jsonResponse) {
       alert(jsonResponse);
@@ -125,6 +130,7 @@ function registerUser() {
       //} else {
       //router.push({ name: 'riderhome'});
       //}
+      router.push({ name: 'Login'});
     })
     .catch(function (error) {
       console.log(error);

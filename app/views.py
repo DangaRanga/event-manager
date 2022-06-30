@@ -6,7 +6,7 @@ This file creates your application.
 """
 
 from app import app,db,login_manager,app_bcrypt
-from flask import request, jsonify,g, make_response,send_file, flash, redirect, render_template, url_for
+from flask import request, jsonify,g, make_response,send_file, flash, redirect, render_template, url_for,send_from_directory
 import os
 from app.models import *
 from flask_wtf.csrf import generate_csrf
@@ -42,7 +42,10 @@ def about():
 def admin_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        if current_user.role != 'admin':       
+        encoded_jwt = request.headers['Authorization'].split()[1]
+        decoded_jwt = jwt.decode(encoded_jwt, app.config['SECRET_KEY'], algorithms=["HS256"])
+        role = decoded_jwt.get("role")
+        if role != 'admin':       
             flash("You don't have permission to access this resource.", "warning")
             return redirect(url_for("home"))
         return func(*args, **kwargs)
@@ -51,7 +54,11 @@ def admin_required(func):
 def regular_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        if current_user.role != 'regular':       
+        encoded_jwt = request.headers['Authorization'].split()[1]
+        decoded_jwt = jwt.decode(encoded_jwt, app.config['SECRET_KEY'], algorithms=["HS256"])
+        print(decoded_jwt)
+        role = decoded_jwt.get("role")
+        if role != 'regular':       
             flash("You don't have permission to access this resource.", "warning")
             return redirect(url_for("home"))
         return func(*args, **kwargs)
@@ -61,10 +68,8 @@ def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
     #auth = "Bearer "+ request.cookies.get('token', None) 
-    auth = "Bearer "+ request.headers['x-access-tokens']
-    #auth = request.headers['Authorization']
-
-    print(auth)
+    #auth = "Bearer "+ request.headers['x-access-tokens']
+    auth = request.headers['Authorization']
 
     if not auth:
       return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
@@ -104,7 +109,10 @@ def generate_token(id,name,role):
     return token
 
 @app.route('/register', methods=['POST'])
-def register():
+def register(): 
+    """
+    Adds a new regular user. 
+    """
     form = RegisterForm()
     if request.method == 'POST' and form.validate_on_submit():
         current_dt = datetime.datetime.now()
@@ -143,15 +151,15 @@ def login():
                 token=generate_token(user.userid,user.full_name,user.role)
                 resp = make_response(jsonify(error=None, data={'token': "Bearer " +token}, message="Token Generated"))
                 resp.set_cookie('token', token, httponly=True, secure=True)
-                resp.set_cookie('user', user.userid, httponly=False, secure=True)
+                resp.set_cookie('user', bytes(user.userid), httponly=False, secure=True)
                 return resp
-        return jsonify(error="Not Authorized"),401   
+        return jsonify(error="Not Authorized"),401  
+    print(form.errors) 
     return jsonify(form.errors), 400     
 
 @app.route('/auth/logout', methods=['POST','GET'])
 @requires_auth
 def logout():
-    logout_user()
     resp= make_response('', 204) 
     resp.delete_cookie('token')
     resp.delete_cookie('user')
@@ -169,55 +177,55 @@ def load_user(id):
 
 
 @app.route('/api/events', methods=['POST','GET'])
-#@login_required
 @requires_auth
 #@regular_required
 def events():
     # Form data
-    #if current_user.is_authenticated:
-            form = AddEventsForm()
+    form = AddEventsForm()
 
-            # Validate file upload on submit
-            if request.method == 'POST' and form.validate_on_submit():
-                # Get file data and save to your uploads folder
-                current_dt = datetime.datetime.now()
+    # Validate file upload on submit
+    if request.method == 'POST' and form.validate_on_submit():
+        # Get file data and save to your uploads folder
+        current_dt = datetime.datetime.now()
+
+        image = form.photo.data
+        filename = secure_filename(image.filename)
+
+        title= form.title.data
+        start_date = form.startdate.data
+        start_time = form.starttime.data
+        
+        end_date= form.enddate.data
+        end_time= form.endtime.data
+        description= form.description.data
+        venue= form.venue.data
+        website_url= request.form['website_url']
     
-                image = form.photo.data
-                filename = secure_filename(image.filename)
-
-                title= form.title.data
-                start_date = form.startdate.data
-                start_time = form.starttime.data
-                
-                end_date= form.enddate.data
-                end_time= form.endtime.data
-                description= form.description.data
-                venue= form.venue.data
-                website_url= request.form['website_url']
-            
-                status="pending"
-            
-                photo = filename
-                uid=current_user.get_id() or 6
-                created_at = current_dt.strftime("%Y-%m-%d " + "%X")
-                event = Events(uid, title, start_date, end_date, start_time,end_time,description,venue,photo,website_url,status)
-                db.session.add(event) 
-                db.session.commit()
-                image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                
-                return jsonify(title= title, start_date = start_date, start_time=start_time,end_date=end_date,end_time=end_time, description=description,
-                venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
-
-            elif request.method == 'GET': 
-                event_query_data = db.session.query(Events).order_by(Events.start_date.desc()).filter_by(status='published').all()
-                response_data = formatEvents(event_query_data)
+        status="pending"
     
-                return jsonify(response_data),200
+        photo = filename
+        uid=current_user.get_id() or 6
+        created_at = current_dt.strftime("%Y-%m-%d " + "%X")
+        event = Events(uid, title, start_date, end_date, start_time,end_time,description,venue,photo,website_url,status)
+        db.session.add(event) 
+        db.session.commit()
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
+        return jsonify(title= title, start_date = start_date, start_time=start_time,end_date=end_date,end_time=end_time, description=description,
+        venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
 
-            return jsonify(form.errors), 400
+    elif request.method == 'GET': 
+        event_query_data = db.session.query(Events).order_by(Events.start_date.asc()).filter_by(status='published').all()
+        response_data = formatEvents(event_query_data)
+
+        return jsonify(response_data),200
+
+    return jsonify(form.errors), 400
 
 
-@app.route('/api/events/<user_id>', methods=['GET'])
+
+
+@app.route('/api/user/<user_id>/events', methods=['GET'])
 @login_required
 @requires_auth
 @regular_required
@@ -384,11 +392,25 @@ def search():
         return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
 
 
+
+
+
+
+
+
+
+
+@app.route('/uploads/<filename>')
+def get_image(filename):
+    root_dir = os.getcwd()
+    return send_from_directory(os.path.join(root_dir,app.config['UPLOAD_FOLDER']), filename)
+
 ###
 # The functions below should be applicable to all Flask apps.
 ###
 
 # Display Flask WTF errors as Flash messages
+
 def flash_errors(form):
     for field, errors in form.errors.items():
         for error in errors:
@@ -396,6 +418,7 @@ def flash_errors(form):
                 getattr(form, field).label.text,
                 error
             ), 'danger')
+
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
