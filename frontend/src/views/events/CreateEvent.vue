@@ -24,7 +24,7 @@
       </router-link>
     </button>
 
-    <form class="ml-32 mr-20 mx-5">
+    <form class="ml-32 mr-20 mx-5 event-form">
       <section id="basic-details" class="my-5">
         <div>
           <h1 class="text-4xl font-bold">Basic Details</h1>
@@ -40,14 +40,13 @@
           <input
             type="text"
             class="px-2 border py-2 rounded w-full"
-            name="event-title"
+            name="title"
             required
             maxlength="100"
-            id="event-title"
           />
         </div>
         <div class="my-4">
-          <label for="title" class="block text-primary text-sm mb-1"
+          <label for="description" class="block text-primary text-sm mb-1"
             >Event Description</label
           >
           <textarea
@@ -55,6 +54,7 @@
             rows="4"
             class="block p-2.5 text-sm w-full rounded border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark: dark:focus:border-blue-500"
             placeholder="Your message..."
+            name="description"
           ></textarea>
         </div>
       </section>
@@ -68,57 +68,53 @@
         </div>
         <div id="start-times" class="grid grid-cols-2 gap-5">
           <div class="my-4">
-            <label for="title" class="block text-primary text-sm mb-1"
+            <label for="startdate" class="block text-primary text-sm mb-1"
               >Start Date</label
             >
             <input
               type="text"
               class="px-2 border py-2 w-full rounded"
-              name="event-title"
+              name="startdate"
               required
               maxlength="100"
-              id="event-title"
             />
           </div>
           <div class="my-4">
-            <label for="title" class="block text-primary text-sm mb-1"
+            <label for="starttime" class="block text-primary text-sm mb-1"
               >Start Time</label
             >
             <input
               type="text"
               class="px-2 border py-2 w-full rounded"
-              name="event-title"
+              name="starttime"
               required
               maxlength="100"
-              id="event-title"
             />
           </div>
         </div>
         <div id="end-times" class="grid grid-cols-2 gap-5">
           <div class="my-4">
-            <label for="title" class="block text-primary text-sm mb-1"
+            <label for="enddate" class="block text-primary text-sm mb-1"
               >End Date</label
             >
             <input
               type="text"
               class="px-2 border py-2 w-full rounded"
-              name="event-title"
+              name="enddate"
               required
               maxlength="100"
-              id="event-title"
             />
           </div>
           <div class="my-4">
-            <label for="title" class="block text-primary text-sm mb-1"
+            <label for="endtime" class="block text-primary text-sm mb-1"
               >End Time</label
             >
             <input
               type="text"
               class="px-2 border py-2 w-full rounded"
-              name="event-title"
+              name="endtime"
               required
               maxlength="100"
-              id="event-title"
             />
           </div>
         </div>
@@ -130,16 +126,27 @@
           where to show up.
         </p>
         <div class="my-4">
-          <label for="title" class="block text-primary text-sm mb-1"
+          <label for="venue" class="block text-primary text-sm mb-1"
             >Venue</label
           >
           <input
             type="text"
             class="px-2 border py-2 rounded w-full"
-            name="event-title"
+            name="venue"
             required
             maxlength="100"
-            id="event-title"
+          />
+        </div>
+        <div class="my-4">
+          <label for="website_url" class="block text-primary text-sm mb-1"
+            >Website Url</label
+          >
+          <input
+            type="text"
+            class="px-2 border py-2 rounded w-full"
+            name="website_url"
+            required
+            maxlength="100"
           />
         </div>
         <div class="flex justify-center items-center">
@@ -174,7 +181,7 @@
           </label>
         </div>
       </section>
-      <input
+      <input @click.stop.prevent="submitEvent"
         type="submit"
         value="Submit"
         class="my-3 px-7 py-3 bg-primary text-white rounded text-sm font-medium hover:bg-primaryHover transition ease-in-out delay-150 cursor-pointer"
@@ -182,8 +189,44 @@
     </form>
   </div>
 </template>
-<script>
-export default {
-  name: "CreateEvent",
-};
+<script setup>
+import router from '../../router';
+
+
+function submitEvent(){
+
+  const form = document.querySelector(".event-form");
+
+  const form_data = new FormData(form);
+
+
+  fetch("http://localhost:8080/api/events", {
+    method: "POST",
+    body: form_data,
+    headers: {
+      // 'X-CSRFToken': token
+      'Authorization': localStorage.getItem('token')
+    },
+    credentials: "same-origin",
+  })
+    .then(function (response) {
+      if (!response.ok) {
+        alert("HTTP status " + response.status);
+        return
+      }
+      return response.json();
+      
+    })
+    .then(function (jsonResponse) {
+      alert(jsonResponse);
+
+      router.push({ name: 'EventsDashboard'});
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+
+
 </script>

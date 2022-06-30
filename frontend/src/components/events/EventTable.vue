@@ -18,19 +18,23 @@
         <tr
           class=" level1 border-b dark:bg-gray-800 dark:border-gray-700 odd:bg-white even:bg-gray-50 odd:dark:bg-gray-800 even:dark:bg-gray-700"
           :id="event.eventid"
-          @click="getEventDetails"
+          
         >
           <th
             scope="row"
             class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap level2"
+            @click="getEventDetails"
           >
             <img :src="event.photo" class="w-20 h-20 level3" alt="event-image" />
           </th>
-          <td class="px-6 py-4 level2">{{event.title}}</td>
-          <td class="px-6 py-4 level2"><span class="level3">{{event.start_date}}</span> -<span>{{event.end_date}}</span></td>
-          <td class="px-6 py-4 level2">{{event.venue}}</td>
-          <td class="px-6 py-4 level2">{{event.status}}</td>
-          <td class="px-6 py-4">Edit | Delete</td>
+          <td @click="getEventDetails" class="px-6 py-4 level2">{{event.title}}</td>
+          <td @click="getEventDetails" class="px-6 py-4 level2"><span class="level3">{{event.start_date}}</span> -<span>{{event.end_date}}</span></td>
+          <td @click="getEventDetails" class="px-6 py-4 level2">{{event.venue}}</td>
+          <td @click="getEventDetails" class="px-6 py-4 level2">{{event.status}}</td>
+          <td class="px-6 py-4">
+            <button class = "bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">Edit</button> | 
+            <button @click.stop.prevent="deleteEvent" class = "bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">Delete</button>
+          </td>
         </tr>
        
 
@@ -94,6 +98,45 @@ function getEventDetails(e){
   router.push({ name: 'EventDetails', params: { 'eventid': id} });
 }
 
+/* function editEvent(e){
+  var target = e.target
+  var id = ""
+  id = target.parentElement.parentElement.getAttribute('id')
+  router.push({ name: 'EventDetails', params: { 'eventid': id} });
+} */
+
+function deleteEvent(e){
+  var target = e.target
+  var id = ""
+  id = target.parentElement.parentElement.getAttribute('id')
+  fetch(`http://localhost:8080/api/events/${id}`, {
+    method: "DELETE",
+    headers: {
+      // 'X-CSRFToken': token
+      'Authorization': localStorage.getItem('token')
+    },
+    credentials: "same-origin",
+  })
+    .then(function (response) {
+      if (!response.ok) {
+        alert("HTTP status " + response.status);
+        return
+      }
+      return response.json();
+      
+    })
+    .then(function (jsonResponse) {
+      alert(jsonResponse);
+
+      get_my_events()
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  
+
+}
+
 
 </script>
 
@@ -106,5 +149,7 @@ tr:hover{
 td,th{
   z-index: -1;
 }
+
+
 </style>>
 

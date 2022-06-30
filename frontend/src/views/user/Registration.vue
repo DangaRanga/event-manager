@@ -125,11 +125,6 @@ function registerUser() {
     })
     .then(function (jsonResponse) {
       alert(jsonResponse);
-      //if (jsonResponse.status === "error") {
-      //console.log(jsonResponse)
-      //} else {
-      //router.push({ name: 'riderhome'});
-      //}
       router.push({ name: 'Login'});
     })
     .catch(function (error) {
