@@ -1,31 +1,34 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Eventus",
-    "version": "1.0.0",
-    "description": "This is the API for Eventus"
+    "title": "EventUS",
+    "description": "This is the API for EventUS",
+    "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "http://localhost:8080"
+      "url": "https://localhost:8080"
     }
   ],
   "paths": {
     "/register": {
-      "summary": "Register a new user",
+      "summary": "Register a New User",
       "post": {
+        "tags": [
+          "register"
+        ],
         "summary": "Registers a new user",
-        "description": "Allows a user to register ",
+        "description": "",
         "operationId": "register",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserRegistration"
+                "$ref": "#/components/schemas/User"
               },
               "examples": {
-                "user-registration": {
-                  "$ref": "#/components/examples/user-registration"
+                "User": {
+                  "$ref": "#/components/examples/User"
                 }
               }
             }
@@ -41,25 +44,22 @@
                 },
                 "examples": {
                   "user": {
-                    "$ref": "#/components/examples/user"
+                    "$ref": "#/components/examples/User"
                   }
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad Request"
           }
-        },
-        "tags": [
-          "register"
-        ]
+        }
       }
     },
     "/auth/login": {
       "summary": "Authenticate a user",
-      "description": "When a user is authenticated a JWT token is generated",
+      "description": "When a user is authenticated a JWT token should also be generated",
       "post": {
+        "tags": [
+          "auth"
+        ],
         "summary": "Login a user",
         "description": "",
         "operationId": "authLogin",
@@ -67,45 +67,55 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/auth_login_body"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "User Successfully logged in"
-          },
-          "400": {
-            "description": "Bad request"
+            "description": "User Successfully logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Not Authorized"
+            "description": "User Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_401"
+                }
+              }
+            }
           }
-        },
-        "tags": [
-          "auth"
-        ]
+        }
       }
     },
     "/auth/logout": {
       "summary": "Authenticate a user",
       "description": "Logout an authenticated user",
       "post": {
+        "tags": [
+          "auth"
+        ],
         "summary": "Logout a user",
         "description": "",
         "operationId": "authLogout",
-        "security": [
+        "parameters": [
           {
-            "BearerAuth": []
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
           }
         ],
         "responses": {
@@ -114,73 +124,46 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Log out successful"
-                    }
-                  }
+                  "$ref": "#/components/schemas/inline_response_204"
                 }
               }
             }
           },
           "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
+            "description": "Access token is missing or invalid"
           }
         },
-        "tags": [
-          "auth"
-        ]
-      },
-      "get": {
-        "summary": "Get the JWT token from session cookies",
-        "description": "",
-        "operationId": "authLogoutget",
         "security": [
           {
             "BearerAuth": []
           }
-        ],
-        "responses": {
-          "204": {
-            "description": "User Successfully logs out",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Log out successful"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "tags": [
-          "auth"
         ]
       }
     },
     "/api/events": {
+      "summary": "Events listed on the Site",
       "get": {
-        "summary": "Get a list of all published events",
+        "tags": [
+          "events"
+        ],
+        "summary": "Get a list of all upcoming published events",
         "description": "",
         "operationId": "getEvents",
-        "security": [
+        "parameters": [
           {
-            "BearerAuth": []
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Individual Event details",
+            "description": "List of all events",
             "content": {
               "application/json": {
                 "schema": {
@@ -188,295 +171,48 @@
                   "items": {
                     "$ref": "#/components/schemas/Event"
                   }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "events"
-        ]
-      },
-      "post": {
-        "summary": "Adds a new event",
-        "description": "",
-        "operationId": "addUserEvent",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewEvent"
-              },
-              "examples": {
-                "NewEvent": {
-                  "$ref": "#/components/examples/NewEvent"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Individual Event details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Event"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request"
+            "description": "Access token is missing or invalid"
           }
         },
-        "tags": [
-          "events"
-        ]
-      }
-    },
-    "/api/events/{event_id}": {
-      "get": {
-        "summary": "Gets details of a specific event",
-        "description": "",
-        "operationId": "getEvent",
         "security": [
           {
             "BearerAuth": []
           }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "event_id",
-            "description": "The unique id of the event",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Individual event details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Event"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "events"
-        ]
-      },
-      "delete": {
-        "summary": "Deletes details of a specific event",
-        "description": "",
-        "operationId": "deleteEvent",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "event_id",
-            "description": "The unique id of the event",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Individual event details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "events"
-        ]
-      },
-      "patch": {
-        "summary": "Updates a specific event",
-        "description": "",
-        "operationId": "patchEvent",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "event_id",
-            "description": "The unique id of the event",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewEvent"
-              },
-              "examples": {
-                "NewEvent": {
-                  "$ref": "#/components/examples/NewEvent"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "events"
-        ]
-      }
-    },
-    "/api/user/{user_id}/events": {
-      "get": {
-        "summary": "Gets details of events created by a specific user",
-        "description": "",
-        "operationId": "getUserEvents",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "user_id",
-            "description": "The unique id of the user",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Event sdetails",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Event"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "user"
-        ]
-      }
-    },
-    "/api/admin/events": {
-      "get": {
-        "summary": "Gets details of all events",
-        "description": "",
-        "operationId": "getAdminEvents",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Events details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Event"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "admin"
         ]
       },
       "post": {
-        "summary": "Adds a new event created by an admin",
+        "tags": [
+          "events"
+        ],
+        "summary": "Add a New Event",
         "description": "",
-        "operationId": "addAdminEvent",
-        "security": [
+        "operationId": "addEvent",
+        "parameters": [
           {
-            "BearerAuth": []
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewEvent"
+                "$ref": "#/components/schemas/Event"
               },
               "examples": {
-                "NewEvent": {
-                  "$ref": "#/components/examples/NewEvent"
+                "new-event": {
+                  "$ref": "#/components/examples/Post_Events"
                 }
               }
             }
@@ -489,40 +225,61 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Event"
+                },
+                "examples": {
+                  "event": {
+                    "$ref": "#/components/examples/Pend_Events"
+                  }
                 }
               }
             }
+          },
+          "401": {
+            "description": "Access token is missing or invalid"
           }
         },
-        "tags": [
-          "admin"
-        ]
-      }
-    },
-    "/api/admin/events/{user_id}": {
-      "get": {
-        "summary": "Gets details of events created by a specific user (for admins)",
-        "description": "",
-        "operationId": "adminGetUserEvents",
         "security": [
           {
             "BearerAuth": []
           }
+        ]
+      }
+    },
+    "/api/user/{user_id}/events": {
+      "summary": "Get a list of all events created by a specific User",
+      "get": {
+        "tags": [
+          "user"
         ],
+        "summary": "Get details on Events created by a specific User",
+        "description": "",
+        "operationId": "eventslist",
         "parameters": [
           {
-            "in": "path",
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
+          },
+          {
             "name": "user_id",
-            "description": "The unique id of the user",
+            "in": "path",
+            "description": "The unique id of the User",
+            "required": true,
+            "style": "simple",
+            "explode": false,
             "schema": {
               "type": "integer"
-            },
-            "required": true
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Events details",
+            "description": "User's List of Events",
             "content": {
               "application/json": {
                 "schema": {
@@ -533,192 +290,64 @@
                 }
               }
             }
-          }
-        },
-        "tags": [
-          "admin"
-        ]
-      }
-    },
-    "/api/admin/events/{event_id}": {
-      "get": {
-        "summary": "Gets details of a specific event",
-        "description": "",
-        "operationId": "getAdminEvent",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "event_id",
-            "description": "The unique id of the event",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Individual event details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Event"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "admin"
-        ]
-      },
-      "delete": {
-        "summary": "Deletes details of a specific event",
-        "description": "",
-        "operationId": "deleteAdminEvent",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "event_id",
-            "description": "The unique id of the event",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Individual event details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "admin"
-        ]
-      }
-    },
-    "/api/admin/events/{event_id}/status:{status}": {
-      "patch": {
-        "summary": "Updates the status of a specific event",
-        "description": "",
-        "operationId": "patchAdminEvent",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "event_id",
-            "description": "The unique id of the event",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
           },
-          {
-            "in": "path",
-            "name": "status",
-            "description": "The status of the event",
-            "schema": {
-              "type": "string"
-            },
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
+          "401": {
+            "description": "Access token is missing or invalid"
           }
         },
-        "tags": [
-          "admin"
+        "security": [
+          {
+            "BearerAuth": []
+          }
         ]
       }
     },
     "/api/search": {
+      "summary": "Search for Events",
       "get": {
-        "summary": "Gets events based on specified paramters",
-        "description": "",
-        "operationId": "searchEvents",
-        "security": [
-          {
-            "BearerAuth": []
-          }
+        "tags": [
+          "search"
         ],
+        "summary": "Search for event based on their date or title",
+        "description": "",
+        "operationId": "eventSearch",
         "parameters": [
           {
-            "in": "query",
             "name": "date",
+            "in": "query",
             "description": "The start date of the event",
+            "required": true,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "string"
-            },
-            "required": false
+            }
           },
           {
-            "in": "query",
             "name": "title",
+            "in": "query",
             "description": "The title of the event",
+            "required": true,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "string"
-            },
-            "required": false
+            }
+          },
+          {
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Events details",
+            "description": "List of Events",
             "content": {
               "application/json": {
                 "schema": {
@@ -729,37 +358,340 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Access token is missing or invalid"
           }
         },
-        "tags": [
-          "search"
+        "security": [
+          {
+            "BearerAuth": []
+          }
         ]
       }
     },
-    "/api/csrf-token": {
+    "/api/events/{event_id}": {
       "get": {
-        "summary": "Generates csrf token",
+        "tags": [
+          "events"
+        ],
+        "summary": "Get the Details of a Specific Event",
         "description": "",
-        "operationId": "getCSRF",
+        "operationId": "getEventDetails",
+        "parameters": [
+          {
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
+          },
+          {
+            "name": "event_id",
+            "in": "path",
+            "description": "The unique id of the event",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "CSRF Token",
+            "description": "Return the specified event's details",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "csrf_token": {
-                      "type": "string"
-                    }
+                  "$ref": "#/components/schemas/Event"
+                },
+                "examples": {
+                  "event": {
+                    "$ref": "#/components/examples/Events"
                   }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing or invalid"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Update a Specific Event",
+        "description": "",
+        "operationId": "updateEvent",
+        "parameters": [
+          {
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
+          },
+          {
+            "name": "event_id",
+            "in": "path",
+            "description": "The unique id of the event",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              },
+              "examples": {
+                "update-event": {
+                  "$ref": "#/components/examples/Events"
                 }
               }
             }
           }
         },
+        "responses": {
+          "201": {
+            "description": "Individual Event Updated details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                },
+                "examples": {
+                  "event": {
+                    "$ref": "#/components/examples/Events"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing or invalid"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
         "tags": [
-          "csrf"
+          "events"
+        ],
+        "summary": "Delete Event by ID",
+        "parameters": [
+          {
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
+          },
+          {
+            "name": "event_id",
+            "in": "path",
+            "description": "The unique id of the event",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/events": {
+      "summary": "Allow Admin to see Pending Events listed on the Site",
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Get a list of all pending events",
+        "description": "",
+        "operationId": "getpendEvents",
+        "parameters": [
+          {
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all pending events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Access token is missing or invalid"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/events/{event_id}": {
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Delete Any Event by ID",
+        "parameters": [
+          {
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
+          },
+          {
+            "name": "event_id",
+            "in": "path",
+            "description": "The unique id of the event",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Update status of Specific Event",
+        "description": "",
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "security",
+            "in": "header",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/headers/Authorization"
+            }
+          },
+          {
+            "name": "event_id",
+            "in": "path",
+            "description": "The unique id of the event",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update Event Status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_2"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing or invalid"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
         ]
       }
     }
@@ -769,6 +701,12 @@
       "Event": {
         "type": "object",
         "properties": {
+          "created_at": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
           "description": {
             "type": "string"
           },
@@ -778,12 +716,11 @@
           "end_time": {
             "type": "string"
           },
-          "event_id": {
-            "type": "integer"
+          "eventid": {
+            "type": "number"
           },
           "photo": {
-            "type": "string",
-            "format": "binary"
+            "type": "string"
           },
           "start_date": {
             "type": "string"
@@ -794,50 +731,8 @@
           "status": {
             "type": "string"
           },
-          "title": {
-            "type": "string"
-          },
           "user_id": {
-            "type": "integer"
-          },
-          "venue": {
-            "type": "string"
-          },
-          "website_url": {
-            "type": "string"
-          }
-        }
-      },
-      "NewEvent": {
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string"
-          },
-          "end_date": {
-            "type": "string"
-          },
-          "end_time": {
-            "type": "string"
-          },
-          "photo": {
-            "type": "string",
-            "format": "binary"
-          },
-          "start_date": {
-            "type": "string"
-          },
-          "start_time": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "user_id": {
-            "type": "integer"
+            "type": "number"
           },
           "venue": {
             "type": "string"
@@ -850,16 +745,16 @@
       "User": {
         "type": "object",
         "properties": {
-          "full_name": {
-            "type": "string"
+          "id": {
+            "type": "number"
           },
           "email": {
             "type": "string"
           },
-          "role": {
+          "password": {
             "type": "string"
           },
-          "password": {
+          "full_name": {
             "type": "string"
           },
           "profile_photo": {
@@ -870,80 +765,61 @@
           }
         }
       },
-      "UserRegistration": {
+      "auth_login_body": {
         "type": "object",
         "properties": {
-          "fullname": {
-            "type": "string"
-          },
-          "email": {
+          "username": {
             "type": "string"
           },
           "password": {
             "type": "string"
-          },
-          "photo": {
-            "type": "string"
           }
         }
-      }
-    },
-    "examples": {
-      "user": {
-        "value": {
-          "created_at": "2022-06-29 20:48:02",
-          "email": "LAH@test.com",
-          "full_name": "Lois-Anne Hall",
-          "profile_photo": "Yoga_1_3.png",
-          "role": "regular"
+      },
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Token Generated"
+          }
         }
       },
-      "user-registration": {
-        "value": {
-          "fullname": "Lois-Anne Hall",
-          "email": "LAH@test.com",
-          "password": "password123",
-          "photo": "Yoga_1_3.png"
+      "inline_response_401": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Not Authorized"
+          }
         }
       },
-      "NewEvent": {
-        "value": {
-          "description": "Just a party!",
-          "end_date": "2022-06-29",
-          "end_time": "Then",
-          "photo": "Yoga_1.jpg",
-          "start_date": "2022-06-29",
-          "start_time": "Now",
-          "status": "pending",
-          "title": "Party",
-          "user_id": 1,
-          "venue": "ABC Sqaure",
-          "website_url": "www.website.com"
+      "inline_response_204": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Log out successful"
+          }
         }
       },
-      "Event": {
-        "value": {
-          "created_at": "2022-06-29 22:31:09",
-          "description": "Just a party!",
-          "end_date": "2022-06-29",
-          "end_time": "Then",
-          "photo": "Yoga_1.jpg",
-          "start_date": "2022-06-29",
-          "start_time": "Now",
-          "status": "pending",
-          "title": "Party",
-          "user_id": 1,
-          "venue": "ABC Sqaure",
-          "website_url": "www.website.com"
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Event Successfully Deleted"
+          }
         }
-      }
-    },
-    "securitySchemes": {
-      "BearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "description": "Enter your JWT Bearer Token",
-        "bearerFormat": "JWT"
+      },
+      "inline_response_200_2": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Status Successfully Updated"
+          }
+        }
       }
     },
     "responses": {
@@ -951,13 +827,85 @@
         "description": "Access token is missing or invalid"
       }
     },
+    "examples": {
+      "User": {
+        "value": {
+          "created_at": "2022-06-29 21:38:57",
+          "email": "dpatrick@example.com",
+          "full_name": "Danica Patrick",
+          "profile_photo": "http://localhost/images/photo.jpg",
+          "role": "regular",
+          "id": 7
+        }
+      },
+      "Events": {
+        "value": {
+          "created_at": "Wed, 29 Jun 2022 00:00:00 GMT",
+          "title": "Soca Thursday",
+          "description": "We raving hard",
+          "end_date": "Thu, 30 Jun 2022 00:00:00 GMT",
+          "end_time": "02:00",
+          "eventid": "2",
+          "photo": "http://localhost:8080/uploads/Picture2.jpg",
+          "start_date": "Wed, 29 Jun 2022 00:00:00 GMT",
+          "start_time": "20:00",
+          "status": "published",
+          "user_id": "7,",
+          "venue": "Uwi Student Lounge",
+          "website_url": "https://www.instagram.com/ilovesocajamaica/"
+        }
+      },
+      "Pend_Events": {
+        "value": {
+          "created_at": "Wed, 29 Jun 2022 00:00:00 GMT",
+          "title": "Soca Thursday",
+          "description": "We raving hard",
+          "end_date": "Thu, 30 Jun 2022 00:00:00 GMT",
+          "end_time": "02:00",
+          "eventid": "2",
+          "photo": "http://localhost:8080/uploads/Picture2.jpg",
+          "start_date": "Wed, 29 Jun 2022 00:00:00 GMT",
+          "start_time": "20:00",
+          "status": "pending",
+          "user_id": "7,",
+          "venue": "Uwi Student Lounge",
+          "website_url": "https://www.instagram.com/ilovesocajamaica/"
+        }
+      },
+      "Post_Events": {
+        "value": {
+          "created_at": "Wed, 29 Jun 2022 00:00:00 GMT",
+          "title": "Soca Thursday",
+          "description": "We raving hard",
+          "end_date": "Thu, 30 Jun 2022 00:00:00 GMT",
+          "end_time": "02:00",
+          "eventid": "2",
+          "photo": "http://localhost:8080/uploads/Picture2.jpg",
+          "start_date": "Wed, 29 Jun 2022 00:00:00 GMT",
+          "start_time": "20:00",
+          "user_id": "7,",
+          "venue": "Uwi Student Lounge",
+          "website_url": "https://www.instagram.com/ilovesocajamaica/"
+        }
+      }
+    },
     "headers": {
       "Authorization": {
         "description": "Authorization header with JWT using Bearer Schema",
+        "style": "simple",
+        "explode": false,
         "schema": {
           "type": "string"
         },
         "example": "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjE3NjU1MjAxLCJleHAiOjE2MTc2NjUyMDF9.VDmMnIJzust0ykwP3d7p924VbwPyv0Db3gGiEW7fY7g"
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "description": "Enter your JWT Bearer Token",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

@@ -196,7 +196,7 @@ def events():
     # Validate file upload on submit
     if request.method == 'POST' and form.validate_on_submit():
         # Get file data and save to your uploads folder
-        current_dt = datetime.datetime.now()
+        current_dt = datetime.now()
 
         image = form.photo.data
         filename = filefunc(image)
