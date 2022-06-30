@@ -113,6 +113,13 @@ def get_current_id(jwt_token):
     decoded_jwt = jwt.decode(encoded_jwt, app.config['SECRET_KEY'], algorithms=["HS256"])
     return decoded_jwt.get('sub')
 
+def filefunc(img):
+    now = datetime.now()
+    now.strftime("%m%d%Y%H%M%S%f")
+    ext = secure_filename(img.filename).split(".")[-1]
+    a = f"{now}.{ext}"
+    return a
+
 @app.route('/register', methods=['POST'])
 def register(): 
     """
@@ -122,7 +129,7 @@ def register():
     if request.method == 'POST' and form.validate_on_submit():
         current_dt = datetime.datetime.now()
         image = form.photo.data
-        filename = secure_filename(image.filename)
+        filename = filefunc(image)
     
         password = form.password.data 
         full_name = form.fullname.data
@@ -193,7 +200,7 @@ def events():
         current_dt = datetime.datetime.now()
 
         image = form.photo.data
-        filename = secure_filename(image.filename)
+        filename = filefunc(image)
 
         title= form.title.data
         start_date = form.startdate.data
@@ -281,7 +288,7 @@ def event_detail(event_id):
             # Get file data and save to your uploads folder
             
             image = form.photo.data
-            filename = secure_filename(image.filename)
+            filename = filefunc(image)
 
             event.title= form.title.data
             event.start_date = form.start.data
