@@ -30,10 +30,10 @@ def formatEvents(events):
         data.append({
             "created_at": event.created_at,
             "description": event.description,
-            "end_date": event.end_date,
+            "end_date": event.end_date.strftime("%B, %d  %Y"),
             "end_time": event.end_time,
             "photo": "http://localhost:8080/uploads/"+event.image_url,
-            "start_date": event.start_date,
+            "start_date": event.start_date.strftime("%B, %d  %Y"),
             "start_time": event.start_time,
             "status": event.status,
             "title": event.title,
