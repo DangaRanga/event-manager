@@ -181,7 +181,8 @@
           </label>
         </div>
       </section>
-      <input @click.stop.prevent="submitEvent"
+      <input
+        @click.stop.prevent="submitEvent"
         type="submit"
         value="Submit"
         class="my-3 px-7 py-3 bg-primary text-white rounded text-sm font-medium hover:bg-primaryHover transition ease-in-out delay-150 cursor-pointer"
@@ -190,43 +191,40 @@
   </div>
 </template>
 <script setup>
-import router from '../../router';
+import router from "../../router";
+import {
+  dangerNotification,
+  successNotification,
+} from "@/controllers/toasts/toasts";
 
-
-function submitEvent(){
-
+function submitEvent() {
   const form = document.querySelector(".event-form");
 
   const form_data = new FormData(form);
-
 
   fetch("http://localhost:8080/api/events", {
     method: "POST",
     body: form_data,
     headers: {
       // 'X-CSRFToken': token
-      'Authorization': localStorage.getItem('token')
+      Authorization: localStorage.getItem("token"),
     },
     credentials: "same-origin",
   })
     .then(function (response) {
       if (!response.ok) {
-        alert("HTTP status " + response.status);
-        return
+        dangerNotification("HTTP status " + response.status);
+        return;
       }
       return response.json();
-      
     })
-    .then(function (jsonResponse) {
-      alert(jsonResponse);
+    .then(function () {
+      successNotification("Event Successfully Created. HTTP Response 201");
 
-      router.push({ name: 'EventsDashboard'});
+      router.push({ name: "EventsDashboard" });
     })
     .catch(function (error) {
       console.log(error);
     });
 }
-
-
-
 </script>
