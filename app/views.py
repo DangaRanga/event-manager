@@ -372,6 +372,10 @@ def add_header(response):
     """
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
+    response.headers['Access-Control-Allow-Origin']= 'http://localhost:8080'
+    response.headers['Access-Control-Allow-Headers']= '*'
+    response.headers['Access-Control-Allow-Methods']= 'GET,POST,PATCH,DELETE'
+    response.headers['Access-Control-Allow-Credentials']= 'true'
     return response
 
 
