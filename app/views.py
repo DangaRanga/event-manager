@@ -289,29 +289,40 @@ def event_detail(event_id):
             # Get file data and save to your uploads folder
             
             image = form.photo.data
-            filename = filefunc(image)
+            filename =''
+            if image != None:
+                root_dir = os.getcwd()
+                filename = filefunc(image)
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                os.path.join(root_dir,app.config['UPLOAD_FOLDER']), filename
+                os.remove(os.path.join(root_dir,'uploads\\')+""+event.image_url)
+                event.image_url= filename
+            else:
+                filename=event.image_url
+                event.image_url = filename
+
 
             event.title= form.title.data
-            event.start_date = form.start.data
+            event.start_date = form.startdate.data
             event.start_time = form.starttime.data
             
-            event.end_date= form.end.data
+            event.end_date= form.enddate.data
             event.end_time= form.endtime.data
             event.description= form.description.data
             event.venue= form.venue.data
-            event.website_url= request.form['url']
+            event.website_url= request.form['website_url']
         
             status=event.status
         
-            event.photo = filename
+            
             uid=current_user.get_id()
             created_at = event.created_at
             db.session.commit()
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             
-            return jsonify(title= form.title.data, start_date = form.start.data, start_time=form.starttime.data,end_date=form.end.data,end_time=form.endtime.data, description=form.description.data,
-            venue= form.venue.data,photo = filename, website_url=  request.form['url'], status=status, user_id=uid,created_at= created_at),200
-
+            return jsonify(title= form.title.data, start_date = form.startdate.data, start_time=form.starttime.data,end_date=form.enddate.data,end_time=form.endtime.data, description=form.description.data,
+            venue= form.venue.data,photo = filename, website_url=  request.form['website_url'], status=status, user_id=uid,created_at= created_at),200
+        
+        return jsonify(form.errors), 400
     elif request.method == 'DELETE':  
             event = db.session.query(Events).get(event_id)
             db.session.delete(event)

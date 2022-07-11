@@ -94,13 +94,6 @@
           >
         </div>
       </h5>
-
-      <button
-        v-if="isdata"
-        class="w-1/4 px-7 py-3 bg-red-500 text-white rounded text-sm font-medium hover:bg-red-400 transition ease-in-out delay-150"
-      >
-        Delete Event
-      </button>
     </section>
   </div>
 </template>

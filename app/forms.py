@@ -28,14 +28,14 @@ class AddEventsForm(FlaskForm):
 
 class UpdateEventsForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    start = StringField('Start Date', validators=[DataRequired()])
+    startdate = StringField('Start Date', validators=[DataRequired()])
     starttime = StringField('Start Time', validators=[DataRequired()])
-    end = StringField('End Date', validators=[DataRequired()])
+    enddate = StringField('End Date', validators=[DataRequired()])
     endtime = StringField('End Time', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     venue = StringField('Venue', validators=[DataRequired()])
-    photo = FileField('Upload Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Images only!','jpeg'])])
-    url = StringField('Website Url', validators=[DataRequired()])
+    photo = FileField('Upload Photo', validators=[FileAllowed(['jpg', 'png', 'Images only!','jpeg'])])
+    website_url = StringField('Website Url', validators=[DataRequired()])
 
 class SearchForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
