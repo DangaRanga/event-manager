@@ -28,7 +28,7 @@ var events = ref([]);
 getAllEvents();
 
 function getAllEvents() {
-  fetch("http://localhost:8080/api/events", {
+  fetch("http://localhost:8080/api/v1/events", {
     method: "GET",
     headers: {
       // 'X-CSRFToken': token

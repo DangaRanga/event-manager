@@ -186,7 +186,7 @@ var isdata = ref(false)
 getEventData()
 
 function getEventData(){
-  fetch(`http://localhost:8080/api/events/${router.currentRoute.value.params.eventid}`, {
+  fetch(`http://localhost:8080/api/v1/events/${router.currentRoute.value.params.eventid}`, {
     method: "GET",
     headers: {
       // 'X-CSRFToken': token

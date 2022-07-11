@@ -39,4 +39,4 @@ class UpdateEventsForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    start_date = StringField('Start Date', validators=[DataRequired()])
+    startdate = StringField('Start Date', validators=[DataRequired()])
