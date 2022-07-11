@@ -66,7 +66,7 @@ eventDetails()
 
 function eventDetails(){
 
-  fetch("http://localhost:8080/api/events/"+eid.value.toString(), {
+  fetch("http://localhost:8080/api/v1/events/"+eid.value.toString(), {
     method: "GET",
     headers: {
       // 'X-CSRFToken': token

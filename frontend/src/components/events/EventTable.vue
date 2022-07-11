@@ -63,7 +63,7 @@ if (isAdmin.value===true){
 
 function getAllEvents(){
 
-  fetch("http://localhost:8080/api/admin/events", {
+  fetch("http://localhost:8080/api/v1/events", {
     method: "GET",
     headers: {
       // 'X-CSRFToken': token
@@ -90,7 +90,7 @@ function getAllEvents(){
 
 function get_my_events(){
 
-    fetch(`http://localhost:8080/api/user/${localStorage.getItem('userid').toString()}/events`, {
+    fetch(`http://localhost:8080/api/v1/user/${localStorage.getItem('userid').toString()}/events`, {
     method: "GET",
     headers: {
       // 'X-CSRFToken': token
@@ -144,7 +144,7 @@ function deleteEvent(e){
   var target = e.target
   var id = ""
   id = target.parentElement.parentElement.getAttribute('id')
-  fetch(`http://localhost:8080/api/events/${id}`, {
+  fetch(`http://localhost:8080/api/v1/events/${id}`, {
     method: "DELETE",
     headers: {
       // 'X-CSRFToken': token
@@ -178,7 +178,7 @@ function publish(e){
   var id = ""
   id = target.parentElement.parentElement.getAttribute('id')
 
-  fetch(`http://localhost:8080/api/admin/events/${id}`, {
+  fetch(`http://localhost:8080/api/v1/events/${id}`, {
     method: "PATCH",
     headers: {
       // 'X-CSRFToken': token

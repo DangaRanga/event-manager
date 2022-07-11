@@ -110,7 +110,7 @@ function registerUser() {
 
   console.log(form_data);
 
-  fetch("http://localhost:8080/register", {
+  fetch("http://localhost:8080/api/v1/register", {
     method: "POST",
     body: form_data,
     headers: {
@@ -122,13 +122,14 @@ function registerUser() {
     .then(function (response) {
       if (!response.ok) {
         dangerNotification("HTTP status " + response.status);
-        return;
+        return ;
       }
       return response.json();
     })
-    .then(function () {
-      successNotification(`User Successfully Registered. HTTP Response 201`);
-      router.push({ name: "Login" });
+    .then(function (res) {
+      if(res.fullname!==undefined)
+        successNotification(`User Successfully Registered. HTTP Response 201`);
+        router.push({ name: "Login" });
     })
     .catch(function (error) {
       console.log(error);

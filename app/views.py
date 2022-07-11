@@ -271,7 +271,6 @@ def event_detail(event_id):
                 filename=event.image_url
                 event.image_url = filename
 
-
             event.title= form.title.data
             event.start_date = form.startdate.data
           
@@ -281,7 +280,6 @@ def event_detail(event_id):
             event.website_url= request.form['website_url']
         
             status=event.status
-        
             
             uid=current_user.get_id()
             created_at = event.created_at

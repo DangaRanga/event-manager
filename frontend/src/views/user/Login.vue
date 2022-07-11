@@ -64,7 +64,7 @@ function loginUser() {
 
   const form_data = new FormData(loginform);
 
-  fetch("http://localhost:8080/auth/login", {
+  fetch("http://localhost:8080/auth/v1/login", {
     method: "POST",
     body: form_data,
     headers: {
