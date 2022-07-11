@@ -322,15 +322,19 @@ def user_event(user_id):
         return jsonify(response_data),200
 
 
-@app.route('/api/v1/search', methods=['GET'])
+@app.route('/api/v1/search', methods=['POST'])
 @requires_auth
 def search():
-    args = request.args
-    date=args.get("date")
-    title=args.get("title")
-    if (title=="" or date==""):
-        return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
-    return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
+   if request.method == 'POST':  
+        form = SearchForm()
+
+        # Validate file upload on submit
+        if form.validate_on_submit():
+            title= form.title.data
+            date = form.startdate.data
+            if (title=="" or date==""):
+                return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
+            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
 
 
 
@@ -370,6 +374,10 @@ def add_header(response):
     """
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
+    response.headers['Access-Control-Allow-Origin']= 'http://localhost:8080'
+    response.headers['Access-Control-Allow-Headers']= '*'
+    response.headers['Access-Control-Allow-Methods']= 'GET,POST,PATCH,DELETE'
+    response.headers['Access-Control-Allow-Credentials']= 'true'
     return response
 
 
