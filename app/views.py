@@ -113,13 +113,18 @@ def get_current_id(jwt_token):
     decoded_jwt = jwt.decode(encoded_jwt, app.config['SECRET_KEY'], algorithms=["HS256"])
     return decoded_jwt.get('sub')
 
+def get_role(jwt_token):
+    encoded_jwt = jwt_token.split()[1]
+    decoded_jwt = jwt.decode(encoded_jwt, app.config['SECRET_KEY'], algorithms=["HS256"])
+    return decoded_jwt.get('role')
+
 def filefunc(img):
     now = datetime.now().strftime("%m%d%Y%H%M%S%f")
     ext = secure_filename(img.filename).split(".")[-1]
     a = f"{now}.{ext}"
     return a
 
-@app.route('/register', methods=['POST'])
+@app.route('/api/v1/register', methods=['POST'])
 def register(): 
     """
     Adds a new regular user. 
@@ -148,7 +153,7 @@ def register():
 
     return jsonify(form.errors), 400
 
-@app.route('/auth/login', methods=['POST'])
+@app.route('/auth/v1/login', methods=['POST'])
 def login():
     form = LoginForm()
    
@@ -168,7 +173,7 @@ def login():
     print(form.errors) 
     return jsonify(form.errors), 400     
 
-@app.route('/auth/logout', methods=['GET'])
+@app.route('/auth/v1/logout', methods=['GET'])
 @requires_auth
 def logout():
     resp= make_response(jsonify(error=None, message='You have been sucessfully logged out.')) 
@@ -176,7 +181,7 @@ def logout():
     resp.delete_cookie('user')
     return resp,204
 
-@app.route('/api/csrf-token', methods=['GET'])
+@app.route('/api/v1/csrf-token', methods=['GET'])
 def get_csrf():
     return jsonify({'csrf_token': generate_csrf()})
 
@@ -186,7 +191,7 @@ def load_user(id):
     return Users.query.get(id) #removed it as id is email
 
 
-@app.route('/api/events', methods=['POST','GET'])
+@app.route('/api/v1/events', methods=['POST','GET'])
 @requires_auth
 def events():
     # Form data
@@ -203,10 +208,8 @@ def events():
 
         title= form.title.data
         start_date = form.startdate.data
-        start_time = form.starttime.data
         
         end_date= form.enddate.data
-        end_time= form.endtime.data
         description= form.description.data
         venue= form.venue.data
         website_url= request.form['website_url']
@@ -216,72 +219,39 @@ def events():
         photo = filename
         uid= get_current_id(jwt_token)
         created_at = current_dt.strftime("%Y-%m-%d " + "%X")
-        event = Events(uid, title, start_date, end_date, start_time,end_time,description,venue,photo,website_url,status)
+        event = Events(uid, title, start_date, end_date,description,venue,photo,website_url,status)
         db.session.add(event) 
         db.session.commit()
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
-        return jsonify(title= title, start_date = start_date, start_time=start_time,end_date=end_date,end_time=end_time, description=description,
+        return jsonify(title= title, start_date = start_date,end_date=end_date, description=description,
         venue= venue,photo = filename, website_url= website_url, status=status, user_id=uid,created_at= created_at),201
 
-    elif request.method == 'GET': 
-        event_query_data = db.session.query(Events).order_by(Events.start_date.asc()).filter_by(status='published').all()
-        response_data = formatEvents(event_query_data)
+    if (get_role(jwt_token)=='regular'):
+        if request.method == 'GET': 
+            event_query_data = db.session.query(Events).order_by(Events.start_date.asc()).filter_by(status='published').all()
+            response_data = formatEvents(event_query_data)
+            return jsonify(response_data),200
 
-        return jsonify(response_data),200
-    
+    elif (get_role(jwt_token)=='admin'):
+        if request.method == 'GET': 
+            event_query_data = db.session.query(Events).order_by(Events.start_date.asc()).filter_by(status='pending').all()
+            response_data = formatEvents(event_query_data)
+            return jsonify(response_data),200
+            
     print(form.errors)
 
     return jsonify(form.errors), 400
 
 
-
-
-@app.route('/api/admin/events', methods=['GET'])
-@requires_auth
-@admin_required
-def admin_events():
-    event_query_data = db.session.query(Events).order_by(Events.start_date.asc()).filter_by(status='pending').all()
-    response_data = formatEvents(event_query_data)
-    return jsonify(response_data),200
-
-#Admin Endpoint
-@app.route('/api/admin/events/<event_id>', methods=['PATCH', 'DELETE']) #Change status publishing
-@requires_auth
-@admin_required
-def admin_event_detail(event_id):
-    event = db.session.query(Events).get(event_id)
-    if request.method == 'DELETE':  
-        db.session.delete(event)
-        db.session.commit()         
-        return jsonify(message="Event Succesfully Deleted"),200
-    
-    elif request.method == 'PATCH':
-        if event != None:
-            event.status = "published"
-            db.session.commit()
-            return jsonify(message = "Status Successfully Updated"),200
-        return jsonify(message = "Event by id " + event_id + "not found"),404
-
-
-
-@app.route('/api/user/<user_id>/events', methods=['GET'])
-@requires_auth
-def user_event(user_id):
-    user_id=user_id
-    if request.method == 'GET':
-        event_query_data = db.session.query(Events).filter(Events.userid==user_id).all()
-        response_data = formatEvents(event_query_data)
-        return jsonify(response_data),200
-
-
-
-@app.route('/api/events/<event_id>', methods=['GET','POST','DELETE']) #all users can delete and update
+@app.route('/api/v1/events/<event_id>', methods=['POST','GET','PATCH', 'DELETE']) #Change status publishing
 @requires_auth
 def event_detail(event_id):
+    jwt_token = request.headers['Authorization']
+
     if request.method == 'POST':
         event = db.session.query(Events).get(event_id)
-        
+  
         form = UpdateEventsForm()
 
         # Validate file upload on submit
@@ -304,10 +274,8 @@ def event_detail(event_id):
 
             event.title= form.title.data
             event.start_date = form.startdate.data
-            event.start_time = form.starttime.data
-            
+          
             event.end_date= form.enddate.data
-            event.end_time= form.endtime.data
             event.description= form.description.data
             event.venue= form.venue.data
             event.website_url= request.form['website_url']
@@ -319,38 +287,56 @@ def event_detail(event_id):
             created_at = event.created_at
             db.session.commit()
             
-            return jsonify(title= form.title.data, start_date = form.startdate.data, start_time=form.starttime.data,end_date=form.enddate.data,end_time=form.endtime.data, description=form.description.data,
+            return jsonify(title= form.title.data, start_date = form.startdate.data,end_date=form.enddate.data, description=form.description.data,
             venue= form.venue.data,photo = filename, website_url=  request.form['website_url'], status=status, user_id=uid,created_at= created_at),200
         
         return jsonify(form.errors), 400
+    
     elif request.method == 'DELETE':  
-            event = db.session.query(Events).get(event_id)
-            db.session.delete(event)
-            db.session.commit()         
-            return jsonify(message="Event Succesfully Deleted"),200
+        event = db.session.query(Events).get(event_id)
+        db.session.delete(event)
+        db.session.commit()         
+        return jsonify(message="Event Succesfully Deleted"),200
 
-    event_query_data = db.session.query(Events).filter(Events.eventid==event_id).all()
-    response_data = formatEvents(event_query_data)[0]
-    return jsonify(response_data),200
+    elif request.method == 'GET':
+        event_query_data = db.session.query(Events).filter(Events.eventid==event_id).all()
+        response_data = formatEvents(event_query_data)[0]
+        return jsonify(response_data),200
+    
+    if (get_role(jwt_token)=='admin'):
+        event = db.session.query(Events).get(event_id)
+        if request.method == 'PATCH':
+            if event != None:
+                event.status = "published"
+                db.session.commit()
+                return jsonify(message = "Status Successfully Updated"),200
+            return jsonify(message = "Event by id " + event_id + "not found"),404
 
 
-@app.route('/api/search', methods=['GET'])
-@login_required
+
+@app.route('/api/v1/user/<user_id>/events', methods=['GET'])
+@requires_auth
+def user_event(user_id):
+    user_id=user_id
+    if request.method == 'GET':
+        event_query_data = db.session.query(Events).filter(Events.userid==user_id).all()
+        response_data = formatEvents(event_query_data)
+        return jsonify(response_data),200
+
+
+@app.route('/api/v1/search', methods=['POST'])
 @requires_auth
 def search():
-    args = request.args
-    date=args.get("date")
-    title=args.get("title")
-    if (title=="" or date==""):
-        return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
-    return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
+   if request.method == 'POST':  
+        form = SearchForm()
 
-
-
-
-
-
-
+        # Validate file upload on submit
+        if form.validate_on_submit():
+            title= form.title.data
+            date = form.startdate.data
+            if (title=="" or date==""):
+                return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
+            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
 
 
 
@@ -390,6 +376,10 @@ def add_header(response):
     """
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
+    response.headers['Access-Control-Allow-Origin']= 'http://localhost:8080'
+    response.headers['Access-Control-Allow-Headers']= '*'
+    response.headers['Access-Control-Allow-Methods']= 'GET,POST,PATCH,DELETE'
+    response.headers['Access-Control-Allow-Credentials']= 'true'
     return response
 
 
