@@ -333,9 +333,13 @@ def search():
             title= form.title.data
             date = form.startdate.data
             if (title=="" or date==""):
-                return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))]),200
-            return jsonify(event=[i.serialize() for i in  db.session.query(Events).filter(Events.start_date==date,Events.title==title)]),200
-
+                event_query_data = db.session.query(Events).filter(or_(Events.start_date==date,Events.title==title))
+                response_data = formatEvents(event_query_data)
+                return jsonify(response_data),200
+            else:
+                event_query_data = db.session.query(Events).filter(Events.start_date==date,Events.title==title)
+                response_data = formatEvents(event_query_data)
+                return jsonify(response_data),200
 
 
 @app.route('/uploads/<filename>')
