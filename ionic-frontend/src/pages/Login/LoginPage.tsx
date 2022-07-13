@@ -6,11 +6,14 @@ import {
   IonToolbar,
 } from "@ionic/react";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import LoginForm from "../../features/auth/components/LoginForm/LoginForm";
 
 const LoginPage: React.FC = () => {
-  return <IonPage></IonPage>;
+  return (
+    <IonPage>
+      <LoginForm />
+    </IonPage>
+  );
 };
 
 export default LoginPage;
