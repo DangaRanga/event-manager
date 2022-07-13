@@ -345,6 +345,26 @@ def search():
             event_query_data = db.session.query(Events).filter(Events.start_date==date,Events.title==title)
             response_data = formatEvents(event_query_data)
             return jsonify(response_data),200
+        
+        
+@app.route('/api/v2/search', methods=['POST'])
+@requires_auth
+def search():
+   if request.method == 'POST':  
+        data=json.loads(request.data)
+        title= data["title"]
+        date = data["startdate"]
+        like_title = "%{}%".format(title) 
+        like_date = "%{}%".format(date) 
+        
+        if (title==None or date==None):
+            event_query_data = db.session.query(Events).filter(or_(Events.start_date.like(like_date),Events.title.like(like_title)))
+            response_data = formatEvents(event_query_data)
+            return jsonify(response_data),200
+        else:
+            event_query_data = db.session.query(Events).filter(Events.start_date==date,Events.title==title)
+            response_data = formatEvents(event_query_data)
+            return jsonify(response_data),200
 
 
 @app.route('/uploads/<filename>')
