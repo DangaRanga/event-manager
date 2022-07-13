@@ -18,6 +18,13 @@ const Tab3: React.FC = () => {
   const [events, setEvent] = useState([]);
   const token = localStorage.getItem("token");
 
+  interface Event{
+    photo: string;
+    venue: string;
+    title: string;
+    start_date: string;
+  }
+  
   const Search = useCallback(async () => {
     const response = await fetch("http://localhost:8080/api/v1/search", {
       headers: {
@@ -62,7 +69,7 @@ const Tab3: React.FC = () => {
         <IonText color="muted">
           <h2>Events Results</h2>
         </IonText>
-        {events.map((event) => (
+        {events.map((event:Event) => (
           <IonCard>
             <img src={event.photo} />
             <IonCardHeader>
