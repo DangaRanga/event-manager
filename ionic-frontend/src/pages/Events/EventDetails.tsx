@@ -1,5 +1,5 @@
-import { IonContent, IonPage, useIonViewWillEnter } from "@ionic/react";
-import { IonText, IonItem, IonLabel, IonButton } from "@ionic/react";
+import { IonContent, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from "@ionic/react";
+import { IonText, IonItem, IonLabel, IonButton, IonHeader } from "@ionic/react";
 import {
   IonCard,
   IonCardHeader,
@@ -10,11 +10,11 @@ import {
 } from "@ionic/react";
 import React, { useCallback, useEffect } from "react";
 import { useState } from "react";
-import './Tab1.css';
 
 
 
-const Tab1: React.FC = () => {
+const EventDetails: React.FC = () => {
+
   interface Event{
     created_at: string,
     description: string,
@@ -38,8 +38,13 @@ const Tab1: React.FC = () => {
   
   return (
     <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Tab 2</IonTitle>
+        </IonToolbar>
+      </IonHeader>
       <IonContent className="ion-padding details-container">
-        <div >
+        <div>
           <IonImg src={'https://total-event.com/wp-content/uploads/2018/01/event-planning-microsoft-ignite.jpg'}>
           </IonImg>
         </div>
@@ -54,4 +59,4 @@ const Tab1: React.FC = () => {
   );
 };
 
-export default Tab1;
+export default EventDetails;

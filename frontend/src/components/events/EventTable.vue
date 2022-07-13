@@ -87,17 +87,12 @@ if (isAdmin.value === true) {
   get_my_events();
 }
 
-<<<<<<< HEAD
 
 
 
 function getAllEvents(){
 
   fetch("http://localhost:8080/api/v1/events", {
-=======
-function getAllEvents() {
-  fetch("http://localhost:8080/api/admin/events", {
->>>>>>> 10ac2183ce7037eec6f16f6c85b49848f370603e
     method: "GET",
     headers: {
       // 'X-CSRFToken': token
@@ -121,7 +116,6 @@ function getAllEvents() {
     });
 }
 
-<<<<<<< HEAD
 function get_my_events(){
 
     fetch(`http://localhost:8080/api/v1/user/${localStorage.getItem('userid').toString()}/events`, {
@@ -132,32 +126,6 @@ function get_my_events(){
     },
     credentials: "same-origin",
   })
-  .then(function (response){
-    if (!response.ok) {
-      alert("HTTP status " + response.status);
-      return
-=======
-function get_my_events() {
-  fetch(
-    `http://localhost:8080/api/user/${localStorage
-      .getItem("userid")
-      .toString()}/events`,
-    {
-      method: "GET",
-      headers: {
-        // 'X-CSRFToken': token
-        Authorization: localStorage.getItem("token"),
-      },
-      credentials: "same-origin",
->>>>>>> 10ac2183ce7037eec6f16f6c85b49848f370603e
-    }
-  )
-    .then(function (response) {
-      if (!response.ok) {
-        alert("HTTP status " + response.status);
-        return;
-      }
-    })
     .then(function (response) {
       if (!response.ok) {
         alert("HTTP status " + response.status);
@@ -196,19 +164,11 @@ function editEvent(e) {
   router.push({ name: "EditEvent", params: { eventid: id } });
 }
 
-<<<<<<< HEAD
 function deleteEvent(e){
   var target = e.target
   var id = ""
   id = target.parentElement.parentElement.getAttribute('id')
   fetch(`http://localhost:8080/api/v1/events/${id}`, {
-=======
-function deleteEvent(e) {
-  var target = e.target;
-  var id = "";
-  id = target.parentElement.parentElement.getAttribute("id");
-  fetch(`http://localhost:8080/api/events/${id}`, {
->>>>>>> 10ac2183ce7037eec6f16f6c85b49848f370603e
     method: "DELETE",
     headers: {
       // 'X-CSRFToken': token

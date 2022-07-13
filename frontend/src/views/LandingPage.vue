@@ -60,7 +60,7 @@ let isLoggedIn = false;
 getAllEvents();
 
 function getAllEvents() {
-  fetch("http://localhost:8080/api/events", {
+  fetch("http://localhost:8080/api/v1/events", {
     method: "GET",
     headers: {
       Authorization: localStorage.getItem("token"),
