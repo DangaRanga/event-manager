@@ -69,7 +69,11 @@
   },
   "devDependencies": {
     "@capacitor/cli": "3.6.0",
+<<<<<<< HEAD
     "react-scripts": "5.0.1"
+=======
+    "tailwindcss": "^3.1.6"
+>>>>>>> 1d78653b5773cf58f77d36498484ef3dabeb0238
   },
   "description": "An Ionic project"
 }
