@@ -1,12 +1,15 @@
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
+  IonHeader,
   IonIcon,
   IonLabel,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
   IonTabs,
+  IonTitle,
+  IonToolbar,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
@@ -34,10 +37,19 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import './App.css'
+
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
+
+    <IonHeader className='application-navigation'>
+      <IonToolbar>
+        <IonTitle>Navigation Bar</IonTitle>
+      </IonToolbar>
+    </IonHeader>
+
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
@@ -54,6 +66,7 @@ const App: React.FC = () => (
             <Redirect to="/tab1" />
           </Route>
         </IonRouterOutlet>
+
         <IonTabBar slot="bottom">
           <IonTabButton tab="tab1" href="/tab1">
             <IonIcon icon={triangle} />
@@ -68,6 +81,7 @@ const App: React.FC = () => (
             <IonLabel>Tab 3</IonLabel>
           </IonTabButton>
         </IonTabBar>
+        
       </IonTabs>
     </IonReactRouter>
   </IonApp>
