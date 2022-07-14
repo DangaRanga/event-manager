@@ -1,16 +1,10 @@
 // Hook Imports
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
 // Base components
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonContent } from "@ionic/react";
 
 // Layout Imports
 import { IonGrid, IonRow, IonCol } from "@ionic/react";
@@ -21,28 +15,82 @@ import {
   IonLabel,
   IonInput,
   IonButton,
-  IonIcon,
-  IonAlert,
+  IonCheckbox,
 } from "@ionic/react";
+
+// Function imports
+import { login } from "../../api/login";
 
 const LoginForm: React.FC = () => {
   const history = useHistory();
-  const [email, setEmail] = useState<string>("");
+  const [data, setData] = useState();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const userLogin = (data: any) => {
+    let params = {
+      email: data.email,
+      password: data.password,
+    };
+
+    login(params);
+  };
+
+  const onSubmit = (data: any) => {
+    userLogin(data);
+  };
+
+  const showError = (_fieldName: string) => {
+    {
+      return (
+        (errors as any)[_fieldName] && (
+          <div
+            style={{
+              color: "red",
+              padding: 5,
+              paddingLeft: 12,
+              fontSize: "smaller",
+            }}
+          >
+            {_fieldName.charAt(0).toUpperCase() + _fieldName.slice(1)} is
+            required
+          </div>
+        )
+      );
+    }
+  };
+
   return (
-    <div>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle> Login </IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonRow>
-        <IonCol>
-          <IonItem>
-            <IonLabel position="floating">Email</IonLabel>
-          </IonItem>
-        </IonCol>
-      </IonRow>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <IonItem>
+        <IonLabel position="floating">Username</IonLabel>
+        <IonInput {...register("email", { required: "Email is required!" })} />
+      </IonItem>
+      {showError("email")}
+      <IonItem>
+        <IonLabel position="floating">Password</IonLabel>
+        <IonInput
+          {...register("password", { required: "Password is required!" })}
+          type="password"
+        />
+      </IonItem>
+      {errors.password && (
+        <p className="text-danger" style={{ fontSize: 14 }}>
+          {showError("password")}
+        </p>
+      )}
+      <IonItem lines="none">
+        <IonLabel>Remember me</IonLabel>
+        <IonCheckbox defaultChecked={true} slot="start" />
+      </IonItem>
+      <IonButton className="ion-margin-top" type="submit" expand="block">
+        Login
+      </IonButton>
+    </form>
   );
 };
 

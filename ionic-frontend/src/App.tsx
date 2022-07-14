@@ -11,6 +11,12 @@ import {
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { ellipse, square, triangle } from "ionicons/icons";
+
+// Component Imports
+import NavBar from "components/NavBar/NavBar";
+import { ToastContainer, Zoom } from "react-toastify";
+
+// Page Imports
 import Tab1 from "./pages/Tab1";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
@@ -34,6 +40,7 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import "react-toastify/dist/ReactToastify.css";
 
 setupIonicReact();
 
@@ -74,6 +81,17 @@ const App: React.FC = () => (
         </IonTabBar>
       </IonTabs>
     </IonReactRouter>
+    <ToastContainer
+      transition={Zoom}
+      position="top-right"
+      autoClose={5000}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+    />
   </IonApp>
 );
 
