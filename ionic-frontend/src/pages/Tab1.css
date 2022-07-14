@@ -12,7 +12,8 @@
 }
 
 .event-details-title h1{
-    font-weight: bolder;  
+    font-weight: bolder; 
+    color:var(--ion-color-step-300); 
 }
 .event-details-content{
     padding-top: 6%;
