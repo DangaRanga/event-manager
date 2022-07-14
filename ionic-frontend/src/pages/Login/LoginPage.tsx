@@ -13,16 +13,20 @@ import { IonGrid, IonRow, IonCol } from "@ionic/react";
 // Component Imports
 import LoginForm from "../../features/auth/components/LoginForm/LoginForm";
 
+import "./Login.css";
+
 const LoginPage: React.FC = () => {
   return (
-    <IonPage className="ion-margin">
+    <IonPage >
       <IonContent>
-        <IonGrid>
+        <IonGrid className="login-grid loginImageMobile">
           <IonRow>
             <IonCol>
               <LoginForm />
             </IonCol>
-            <IonCol>Content</IonCol>
+            <IonCol className="loginImage">
+              
+            </IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>
