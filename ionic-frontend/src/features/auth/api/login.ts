@@ -5,7 +5,7 @@ import axios from "axios";
 import { getFormData } from "util/formUtil";
 
 
-export async function login(data: LoginCredentials | any) {
+export async function login(data: LoginCredentials | any, history: any) {
   const response = await fetch("http://localhost:8080/auth/v1/login", {
     method: "POST",
 
@@ -25,5 +25,9 @@ export async function login(data: LoginCredentials | any) {
     localStorage.setItem("token", loginData.data.token)
   
     localStorage.setItem("user",JSON.stringify(loginData.user) )
-
+    
+    if(localStorage.getItem("token")){
+      toast.success("Login Successful")
+      history.push("/my-events")
+    }
 }
