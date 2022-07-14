@@ -12,6 +12,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import "./Tab3.css";
 
+import { Event } from "features/events";
+
 const Tab3: React.FC = () => {
 
   //const { register, handleSubmit } = useForm();
