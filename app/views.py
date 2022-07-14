@@ -352,12 +352,8 @@ def user_event(user_id):
 @app.route('/api/v1/search', methods=['POST'])
 #@requires_auth
 def search():
-<<<<<<< HEAD
    if request.method == 'POST':  
         
-=======
-    if request.method == 'POST':
->>>>>>> d3ac0fb4cb2f9bf56560597b661d595ac19d84a2
         form = SearchForm()
 
         # Validate file upload on submit
