@@ -244,8 +244,7 @@ def events():
         created_at = current_dt.strftime("%Y-%m-%d " + "%X")
         event = Events(uid, title, start_date, end_date, start_time, end_time,
                        description, venue, photo, website_url, status)
-        #    def __init__(self, userid, title, start_date, end_date, start_time, end_time,
-        #  description, venue, image_url, website_url, status):
+
         db.session.add(event)
         db.session.commit()
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -354,7 +353,7 @@ def user_event(user_id):
 
 
 @app.route('/api/v1/search', methods=['POST'])
-# @requires_auth
+@requires_auth
 def search():
     if request.method == 'POST':
 

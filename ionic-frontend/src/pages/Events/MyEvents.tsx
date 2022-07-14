@@ -1,4 +1,4 @@
-import { IonContent, IonPage, useIonViewWillEnter } from "@ionic/react";
+import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonPage, useIonViewWillEnter } from "@ionic/react";
 import {
   IonText,
   IonItem,
@@ -6,15 +6,33 @@ import {
   IonButton,
   IonTextarea,
 } from "@ionic/react";
+import { createOutline } from "ionicons/icons";
+import { title } from "process";
 
-import { EventCard } from "features/events";
+//import { EventCard } from "features/events";
 import React, { useState } from "react";
 import styles from "./MyEvents.module.css";
 
 export const MyEvents: React.FC = () => {
-  const [events, setEvents] = useState<any[]>();
+  interface Event{
+    created_at: string,
+    description: string,
+    end_date: string,
+    end_time: string,
+    eventid: number,
+    photo: string,
+    start_date: string,
+    start_time: string,
+    status: string,
+    title: string,
+    user_id: number,
+    venue: string,
+    website_url: String
+  }
+  const [events, setEvents] = useState<Event[]>();
   const token = localStorage.getItem("token");
   const userData = localStorage.getItem("user");
+  let eventlegnth : number=0;
 
   useIonViewWillEnter(() => {
     const userID = JSON.parse(`${userData}`).id;
@@ -45,13 +63,26 @@ export const MyEvents: React.FC = () => {
     <IonPage>
       <IonContent>
         <div className={styles.content_wrapper}>
-          <EventCard title={"test event"} startDate={"August 20th"} />
-          {console.log(events?.length)}
-          {events?.map((event) => {
-            <div>
-              <EventCard title={event.title} startDate={event.start_date} />
-            </div>;
-          })}
+          {
+            events?.map((_event) => { 
+              return(
+                <IonCard>
+                  <div className={styles.cardContainer}>
+                    <div className={styles.icon_outline}>
+                      <IonIcon size="large" icon={createOutline} />
+                    </div>
+                    <div className={styles.cardContent}>
+                      <IonCardHeader>
+                        <IonCardTitle>{_event.title}</IonCardTitle>
+                      </IonCardHeader>
+
+                      <IonCardContent>{_event.start_date}</IonCardContent>
+                    </div>
+                  </div>
+                </IonCard>
+              )
+            })
+          }
         </div>
       </IonContent>
     </IonPage>
