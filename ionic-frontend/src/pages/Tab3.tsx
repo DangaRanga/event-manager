@@ -13,60 +13,37 @@ import { useForm } from "react-hook-form";
 import "./Tab3.css";
 
 import { Event } from "features/events";
+import { getFormData } from "util/formUtil";
+import { searchEvent } from "features/events";
 
 const Tab3: React.FC = () => {
-
   //const { register, handleSubmit } = useForm();
   const [data, setData] = useState<any>({});
   const [events, setEvent] = useState<Event[]>();
   const [title, setTitle] = useState<string>();
   const [date, setDate] = useState<string>();
-  
+
   const token = localStorage.getItem("token");
 
-  interface Event{
+  interface Event {
     photo: string;
     venue: string;
     title: string;
     start_date: string;
   }
-  
-  function Search (event:SyntheticEvent){
-    event.preventDefault()
-    alert("event")
-      
-    let form_data = new FormData() 
-    form_data.append('title', title as string);
-    form_data.append('startdate', date as string);
 
-    console.log(title)
-    console.log(date)
- 
-    fetch("http://localhost:8080/api/v1/search", {
-      method: "POST",
-      /*headers: {
-        //'X-CSRFToken': token
-        Authorization: localStorage.getItem("token"),
-      },*/
-      credentials: "same-origin",
-    })
-      .then(function (response) {
-        if (!response.ok) {
-          alert("HTTP status " + response.status);
-          return;
-        }
-        return response.json();
-      })
-      .then(function (jsonResponse) {
-        setEvent(jsonResponse);
-        console.log(jsonResponse)
-      })
-      .catch(function (error) {
-        console.log(error);
-    });
-    
-  }
+  const search = (data: any) => {
+    let params = {
+      title: data.title,
+      startdate: data.startdate,
+    };
 
+    searchEvent(params, token);
+  };
+
+  const onSubmit = (data: any) => {
+    search(data);
+  };
 
   return (
     <IonPage>
@@ -74,21 +51,28 @@ const Tab3: React.FC = () => {
         <IonText color="muted">
           <h2>Search Event</h2>
         </IonText>
-        <form >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <IonItem>
             <IonLabel>Title</IonLabel>
-            <input type={'text'} onChange={(event)=>{setTitle(event.target.value)}} placeholder="Title" />
+            <input
+              type={"text"}
+              onChange={(event) => {
+                setTitle(event.target.value);
+              }}
+              placeholder="Title"
+            />
           </IonItem>
           <IonItem>
             <IonLabel>Start Date</IonLabel>
-            <input type={'text'} onChange={(event)=>{setDate(event.target.value)}} placeholder="YYYY-MM-DD" />
+            <input
+              type={"text"}
+              onChange={(event) => {
+                setDate(event.target.value);
+              }}
+              placeholder="YYYY-MM-DD"
+            />
           </IonItem>
-          <IonButton
-            onSubmit={ Search}
-            expand="block"
-            type="submit"
-            className="ion-margin-top"
-          >
+          <IonButton expand="block" type="submit" className="ion-margin-top">
             Search
           </IonButton>
         </form>
@@ -96,7 +80,17 @@ const Tab3: React.FC = () => {
         <IonText color="muted">
           <h2>Events Results</h2>
         </IonText>
-        
+        {events.map((event: Event) => (
+          <IonCard>
+            <img src={event.photo} />
+            <IonCardHeader>
+              <IonCardSubtitle>{event.venue}</IonCardSubtitle>
+              <IonCardTitle>{event.title}</IonCardTitle>
+            </IonCardHeader>
+
+            <IonCardContent>{event.start_date}</IonCardContent>
+          </IonCard>
+        ))}
       </IonContent>
     </IonPage>
   );
