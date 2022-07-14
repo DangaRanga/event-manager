@@ -6,20 +6,17 @@
     
 
 /* for mobile screens*/
-@media screen  and (max-width : 414px) { /*and (min-width: 360px)*/ 
+@media screen  and (min-width: 0px) and (max-width : 450px) { /**/ 
     
     .application-navigation{
         display: none;
-    }
-    ion-tab-bar{
-        display: block;
     }
     
 }
 
 
 /* for tablet screens*/
-@media screen and (min-width: 415px) and (max-width : 1280px) {
+@media screen and (min-width: 451px) and (max-width : 1023px) {
 
     .application-navigation{
         display: none;

@@ -1,13 +1,12 @@
 import { IonContent, IonIcon, IonPage, useIonViewWillEnter } from "@ionic/react";
 import { IonText } from "@ionic/react";
-import { IonImg } from "@ionic/react";
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import { useState } from "react";
-import './Tab1.css';
-
+import { location } from "ionicons/icons";
 import '../components/BackButton';
 import BackButton from "../components/BackButton";
-import { locate, location, locationOutline } from "ionicons/icons";
+import './Tab1.css';
+
 
 
 const Tab1: React.FC = () => {
@@ -60,8 +59,10 @@ const Tab1: React.FC = () => {
   
   return (
     <IonPage>
+      <div><BackButton></BackButton></div>
+      
       <IonContent className="details-container">
-        <BackButton></BackButton>
+        
         <div  className="event-details-top">
           <div className="event-details-mobile event-details-title">
             <IonText color="muted">
@@ -69,11 +70,12 @@ const Tab1: React.FC = () => {
             </IonText>
           </div>
 
-          
-          <IonImg 
-            src={event?.photo}
-            className="image-details-image" 
-          ></IonImg>
+          <div className="event-details-image"  >
+            <img 
+              src={event?.photo}
+              className="event-image" 
+            ></img>
+          </div>
           
         </div>
 

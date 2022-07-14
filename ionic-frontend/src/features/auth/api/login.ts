@@ -2,13 +2,8 @@
 import { toast } from "react-toastify";
 import { LoginCredentials } from "../types/userCredentials";
 import axios from "axios";
+import { getFormData } from "util/formUtil";
 
-
-function getFormData(object: any) {
-    const formData = new FormData();
-    Object.keys(object).forEach(key => formData.append(key, object[key]));
-    return formData;
-}
 
 export function login(data: LoginCredentials | any) {
   fetch("http://localhost:8080/auth/v1/login", {

@@ -75,7 +75,11 @@
     "@capacitor/cli": "3.6.0",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
+<<<<<<< HEAD
     "react-scripts": "5.0.1",
+=======
+    "react-scripts": "^5.0.1",
+>>>>>>> 4f745bc0e5d1ac963d6d2b1a06aa56d0ce81b3de
     "tailwindcss": "^3.1.6"
   },
   "description": "An Ionic project"

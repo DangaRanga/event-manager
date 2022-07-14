@@ -213,7 +213,7 @@ def load_user(id):
 
 
 @app.route('/api/v1/events', methods=['POST', 'GET'])
-@requires_auth
+# @requires_auth
 def events():
     # Form data
     form = AddEventsForm()
@@ -356,7 +356,8 @@ def user_event(user_id):
 @app.route('/api/v1/search', methods=['POST'])
 #@requires_auth
 def search():
-    if request.method == 'POST':
+   if request.method == 'POST':  
+        
         form = SearchForm()
 
         # Validate file upload on submit

@@ -102,6 +102,16 @@ const App: React.FC = () => (
             <IonIcon icon={personCircleOutline} />
             <IonLabel>Tab 2</IonLabel>
           </IonTabButton>
+
+          <IonTabButton tab="tab3" href="/tab3">
+            <IonIcon icon={personCircleOutline} />
+            <IonLabel>Tab 2</IonLabel>
+          </IonTabButton>
+
+          <IonTabButton tab="tab3" href="/tab3">
+            <IonIcon icon={personCircleOutline} />
+            <IonLabel>Tab 2</IonLabel>
+          </IonTabButton>
           
         </IonTabBar>
         
