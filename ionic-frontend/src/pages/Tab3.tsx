@@ -7,7 +7,7 @@ import {
   IonCardTitle,
   IonCardContent,
 } from "@ionic/react";
-import React, { useCallback, useEffect } from "react";
+import React, { SyntheticEvent, useCallback, useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import "./Tab3.css";
@@ -17,9 +17,12 @@ import { getFormData } from "util/formUtil";
 import { searchEvent } from "features/events";
 
 const Tab3: React.FC = () => {
-  const { register, handleSubmit } = useForm();
-  const [data, setData] = useState("");
-  const [events, setEvent] = useState<Event[]>([]);
+  //const { register, handleSubmit } = useForm();
+  const [data, setData] = useState<any>({});
+  const [events, setEvent] = useState<Event[]>();
+  const [title, setTitle] = useState<string>();
+  const [date, setDate] = useState<string>();
+
   const token = localStorage.getItem("token");
 
   interface Event {
@@ -51,11 +54,23 @@ const Tab3: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <IonItem>
             <IonLabel>Title</IonLabel>
-            <input {...register("title")} placeholder="Title" />
+            <input
+              type={"text"}
+              onChange={(event) => {
+                setTitle(event.target.value);
+              }}
+              placeholder="Title"
+            />
           </IonItem>
           <IonItem>
             <IonLabel>Start Date</IonLabel>
-            <input {...register("startdate")} placeholder="YYYY-MM-DD" />
+            <input
+              type={"text"}
+              onChange={(event) => {
+                setDate(event.target.value);
+              }}
+              placeholder="YYYY-MM-DD"
+            />
           </IonItem>
           <IonButton expand="block" type="submit" className="ion-margin-top">
             Search
