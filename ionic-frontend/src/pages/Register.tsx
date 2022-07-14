@@ -65,8 +65,10 @@ const Register: React.FC = () => {
     register_user();
   };
 
-  const handleChangeImage = e => {
-    setPhoto({[e.target.name]: URL.createObjectURL(e.target.files[0])})
+  const setImage = (_event: any) => {
+    let f = _event.target.files![0];
+    setPhoto(f);
+    console.log(f)
   }
 
   return (
@@ -74,6 +76,7 @@ const Register: React.FC = () => {
       <IonContent className="ion-padding">
         <IonText color="muted">
           <h2>Register</h2>
+     
         </IonText>
         <form onSubmit={handleSubmit(onSubmit)}>
           <IonItem>
@@ -110,13 +113,13 @@ const Register: React.FC = () => {
 
           <IonItem>
             <IonLabel>Profile Photo</IonLabel>
-            <input type="file" id="img" name="img" onChange={handleChangeImage}/>
+            <input type="file" id="img" name="img" accept="image/*"    onChange={setImage}/>
           </IonItem>
           <IonButton expand="block" type="submit" className="ion-margin-top">
             Submit
           </IonButton>
         </form>
-
+      
       </IonContent>
     </IonPage>
   );
