@@ -143,7 +143,7 @@ def register():
     Adds a new regular user. 
     """
     form = RegisterForm()
-    data = request.get_json()
+
     if request.method == 'POST' and form.validate_on_submit():
         current_dt = datetime.now()
         image = form.photo.data
@@ -217,7 +217,7 @@ def load_user(id):
 def events():
     # Form data
     form = AddEventsForm()
-    jwt_token = request.headers['Authorization']
+    #jwt_token = request.headers['Authorization']
 
     # Validate file upload on submit
     if request.method == 'POST' and form.validate_on_submit():
@@ -231,6 +231,8 @@ def events():
         start_date = form.startdate.data
 
         end_date = form.enddate.data
+        start_time = form.starttime.data
+        end_time = form.endtime.data
         description = form.description.data
         venue = form.venue.data
         website_url = request.form['website_url']
@@ -238,18 +240,20 @@ def events():
         status = "pending"
 
         photo = filename
-        uid = get_current_id(jwt_token)
+        uid = 10#get_current_id(jwt_token)
         created_at = current_dt.strftime("%Y-%m-%d " + "%X")
-        event = Events(uid, title, start_date, end_date,
+        event = Events(uid, title, start_date, end_date, start_time, end_time,
                        description, venue, photo, website_url, status)
+        #    def __init__(self, userid, title, start_date, end_date, start_time, end_time,
+        #  description, venue, image_url, website_url, status):
         db.session.add(event)
         db.session.commit()
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        return jsonify(title=title, start_date=start_date, end_date=end_date, description=description,
+        return jsonify(title=title, start_date=start_date, end_date=end_date, start_time=start_time, end_time = end_time, description=description,
                        venue=venue, photo=filename, website_url=website_url, status=status, user_id=uid, created_at=created_at), 201
 
-    if (get_role(jwt_token) == 'regular'):
+    """ if (get_role(jwt_token) == 'regular'):
         if request.method == 'GET':
             event_query_data = db.session.query(Events).order_by(
                 Events.start_date.asc()).filter_by(status='published').all()
@@ -261,7 +265,7 @@ def events():
             event_query_data = db.session.query(Events).order_by(
                 Events.start_date.asc()).filter_by(status='pending').all()
             response_data = formatEvents(event_query_data)
-            return jsonify(response_data), 200
+            return jsonify(response_data), 200 """
 
     print(form.errors)
 
@@ -352,22 +356,21 @@ def user_event(user_id):
 @app.route('/api/v1/search', methods=['POST'])
 #@requires_auth
 def search():
-<<<<<<< HEAD
    if request.method == 'POST':  
         
-=======
-    if request.method == 'POST':
->>>>>>> d3ac0fb4cb2f9bf56560597b661d595ac19d84a2
         form = SearchForm()
 
         # Validate file upload on submit
         title = form.title.data
         date = form.startdate.data
 
+        print(title)
+        print(date)
+
         like_title = "%{}%".format(title)
         like_date = "%{}%".format(date)
 
-        if (title == None or date == None):
+        if (title == 'undefined' or date == 'undefined'):
             event_query_data = db.session.query(Events).filter(
                 or_(Events.start_date.like(like_date), Events.title.like(like_title)))
             response_data = formatEvents(event_query_data)

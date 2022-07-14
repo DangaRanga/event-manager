@@ -21,8 +21,10 @@ import { ToastContainer, Zoom } from "react-toastify";
 
 // Page Imports
 import Tab1 from "./pages/Tab1";
-import Tab2 from "./pages/Tab2";
+import AddEvent from "./pages/AddEvents";
+import UpdateEvent from "./pages/UpdateEvent";
 import Tab3 from "./pages/Tab3";
+import Register from "./pages/Register";
 import LoginPage from "./pages/Login/LoginPage";
 
 /* Core CSS required for Ionic components to work properly */
@@ -46,6 +48,7 @@ import "./theme/variables.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import './App.css'
+//import UpdateEvent from "pages/UpdateEvent";
 
 setupIonicReact();
 
@@ -65,16 +68,24 @@ const App: React.FC = () => (
             <Tab1 />
           </Route>
           <Route exact path="/tab2">
-            <Tab2 />
           </Route>
           <Route path="/tab3">
             <Tab3 />
+          </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/addEvents">
+            <AddEvent/>
           </Route>
           <Route exact path="/">
             <Redirect to="/tab1" />
           </Route>
           <Route exact path="/login">
             <LoginPage />
+          </Route>
+          <Route exact path="/update">
+            <UpdateEvent/>
           </Route>
         </IonRouterOutlet>
 
@@ -94,9 +105,19 @@ const App: React.FC = () => (
             <IonLabel>Tab 2</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="register" href="/register">
             <IonIcon icon={personCircleOutline} />
-            <IonLabel>Tab 2</IonLabel>
+            <IonLabel>Register</IonLabel>
+          </IonTabButton>
+
+          <IonTabButton tab="AddEvent" href="/addEvents">
+            <IonIcon icon={personCircleOutline} />
+            <IonLabel>Add Event</IonLabel>
+          </IonTabButton>
+
+          <IonTabButton tab="UpdateEvent" href="/update">
+            <IonIcon icon={personCircleOutline} />
+            <IonLabel>Update Event</IonLabel>
           </IonTabButton>
           
         </IonTabBar>

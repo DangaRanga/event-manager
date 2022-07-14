@@ -13,15 +13,16 @@ import { useForm } from "react-hook-form";
 import "./Tab3.css";
 
 import { Event } from "features/events";
-import { getFormData } from "util/formUtil";
+import { getFormData } from "../util/formUtil";
 import { searchEvent } from "features/events";
 
 const Tab3: React.FC = () => {
-  //const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm();
   const [data, setData] = useState<any>({});
   const [events, setEvent] = useState<Event[]>();
   const [title, setTitle] = useState<string>();
   const [date, setDate] = useState<string>();
+
 
   const token = localStorage.getItem("token");
 
@@ -32,17 +33,21 @@ const Tab3: React.FC = () => {
     start_date: string;
   }
 
-  const search = (data: any) => {
+  async function search () {
     let params = {
-      title: data.title,
-      startdate: data.startdate,
+      title: title,
+      startdate: date,
     };
 
-    searchEvent(params, token);
+    let form_data = getFormData(params)
+
+    let result= await searchEvent(form_data , '')
+
+    setEvent(result);
   };
 
   const onSubmit = (data: any) => {
-    search(data);
+    search();
   };
 
   return (
@@ -80,12 +85,12 @@ const Tab3: React.FC = () => {
         <IonText color="muted">
           <h2>Events Results</h2>
         </IonText>
-        {events.map((event: Event) => (
+        {events?.map((event: Event) => (
           <IonCard>
             <img src={event.photo} />
             <IonCardHeader>
-              <IonCardSubtitle>{event.venue}</IonCardSubtitle>
               <IonCardTitle>{event.title}</IonCardTitle>
+              <IonCardSubtitle>{event.venue}</IonCardSubtitle>
             </IonCardHeader>
 
             <IonCardContent>{event.start_date}</IonCardContent>
