@@ -23,6 +23,7 @@ import { ToastContainer, Zoom } from "react-toastify";
 import Tab1 from "./pages/Tab1";
 import Tab2 from "./pages/AddEvent";
 import Tab3 from "./pages/Tab3";
+import Register from "./pages/Register";
 import LoginPage from "./pages/Login/LoginPage";
 
 /* Core CSS required for Ionic components to work properly */
@@ -71,6 +72,9 @@ const App: React.FC = () => (
           <Route path="/tab3">
             <Tab3 />
           </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
           <Route exact path="/">
             <Redirect to="/tab1" />
           </Route>
@@ -98,9 +102,9 @@ const App: React.FC = () => (
             <IonLabel>Tab 2</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="register" href="/register">
             <IonIcon icon={personCircleOutline} />
-            <IonLabel>Tab 2</IonLabel>
+            <IonLabel>Register</IonLabel>
           </IonTabButton>
 
           <IonTabButton tab="tab3" href="/tab3">
