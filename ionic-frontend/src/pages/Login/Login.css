@@ -1,47 +1,36 @@
-
-.app-back-button{
-    margin: 4%;
+.loginImage {
+    background: url("../../assets/loginImg.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 90vh;
 }
 
-
-
-
-.nav-link-buttons ion-button::part(native){
+.loginImageMobile {
     background: none;
-    border: none;
-    color: black;
-    border: none;
 }
 
-.nav-link-buttons ion-button::part(native):hover{
-    color: #C8491A;
+.login-grid{
+    padding: 0%;
+    margin: 0%;
 }
-
-.application-nav{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    align-items: center;
-    padding-top:1% ;
-
-}
-    
 
 /* for mobile screens*/
 @media screen  and (min-width: 0px) and (max-width : 450px) { /**/ 
-    
-    ion-header{
+    .loginImage {
         display: none;
     }
-    
+
+    .login-page ion-content::part(scroll) {
+        padding-top: 20%;
+    }
+
 }
+
 
 /* for tablet screens*/
 @media screen and (min-width: 451px) and (max-width : 1023px) {
 
-    ion-header{
-        display: none;
-    }
+   
     
 }
  
@@ -58,6 +47,10 @@
     }
     ion-content::part(scroll){
         padding-top: 4.4%;
+    }
+
+    .login-form-column {
+        padding-top: 10%;
     }
 
 }

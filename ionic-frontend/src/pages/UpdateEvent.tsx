@@ -1,11 +1,5 @@
-import { IonContent, IonPage } from "@ionic/react";
-import {
-  IonText,
-  IonItem,
-  IonLabel,
-  IonButton,
-  IonTextarea,
-} from "@ionic/react";
+/* import { IonContent, IonPage } from "@ionic/react";
+import { IonText, IonItem, IonLabel, IonButton ,IonTextarea} from "@ionic/react";
 
 import React from "react";
 import { useState } from "react";
@@ -187,3 +181,5 @@ const UpdateEvent: React.FC = () => {
 };
 
 export default UpdateEvent;
+ */
+export {};

@@ -11,6 +11,7 @@ import {
   setupIonicReact,
   IonToolbar,
   IonTitle,
+  IonButton,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import {
@@ -32,8 +33,8 @@ import { ToastContainer, Zoom } from "react-toastify";
 // Page Imports
 import Tab1 from "./pages/Tab1";
 import AddEvent from "./pages/AddEvents";
-import UpdateEvent from "./pages/UpdateEvent";
 import { MyEvents } from "pages/Events/MyEvents";
+//import UpdateEvent from "./pages/UpdateEvent";
 import Tab3 from "./pages/Tab3";
 import Register from "./pages/Register";
 import LoginPage from "./pages/Login/LoginPage";
@@ -59,17 +60,45 @@ import "./theme/variables.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
+import EventDetails from "pages/Events/EventDetails";
 //import UpdateEvent from "pages/UpdateEvent";
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <IonHeader className="application-navigation">
-      <IonToolbar>
-        <IonTitle>Navigation Bar</IonTitle>
-      </IonToolbar>
+    <IonHeader>
+      <div className="application-nav">
+        <div>
+          <IonTitle color="primary">Eventus</IonTitle>
+        </div>
+        <div className="nav-link-buttons">
+          <IonButton routerLink="/eventdetails" fill="clear">
+            Home
+          </IonButton>
+          <IonButton routerLink="/register" fill="clear">
+            Register
+          </IonButton>
+          <IonButton routerLink="/login" fill="clear">
+            Login
+          </IonButton>
+        </div>
+      </div>
     </IonHeader>
+
+    <IonReactRouter>
+      <IonRouterOutlet>
+        <Route exact path="/login">
+          <LoginPage></LoginPage>
+        </Route>
+        <Route exact path="/register">
+          <Register></Register>
+        </Route>
+        <Route exact path="/eventdetails">
+          <EventDetails></EventDetails>
+        </Route>
+      </IonRouterOutlet>
+    </IonReactRouter>
 
     <IonReactRouter>
       <IonTabs>
@@ -93,11 +122,10 @@ const App: React.FC = () => (
           <Route exact path="/login">
             <LoginPage />
           </Route>
-          <Route exact path="/update">
-            <UpdateEvent />
-          </Route>
+
           <Route exact path="/my-events">
             <MyEvents />
+            {/* <UpdateEvent/> */}
           </Route>
         </IonRouterOutlet>
 
