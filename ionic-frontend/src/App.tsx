@@ -22,7 +22,7 @@ import { ToastContainer, Zoom } from "react-toastify";
 // Page Imports
 import Tab1 from "./pages/Tab1";
 import AddEvent from "./pages/AddEvents";
-import UpdateEvent from "./pages/UpdateEvents";
+import UpdateEvent from "./pages/UpdateEvent";
 import Tab3 from "./pages/Tab3";
 import Register from "./pages/Register";
 import LoginPage from "./pages/Login/LoginPage";
