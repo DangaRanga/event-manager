@@ -23,7 +23,7 @@ class AddEventsForm(FlaskForm):
     endtime = StringField('End Time', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     venue = StringField('Venue', validators=[DataRequired()])
-    photo = FileField('Upload Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Images only!'])])
+    photo = FileField('Upload Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png','jpeg', 'Images only!'])])
     website_url = StringField('Website Url', validators=[DataRequired()])
 
 class UpdateEventsForm(FlaskForm):
