@@ -213,7 +213,7 @@ def load_user(id):
 
 
 @app.route('/api/v1/events', methods=['POST', 'GET'])
-@requires_auth
+# @requires_auth
 def events():
     # Form data
     form = AddEventsForm()

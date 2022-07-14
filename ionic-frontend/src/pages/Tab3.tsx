@@ -13,6 +13,8 @@ import { useForm } from "react-hook-form";
 import "./Tab3.css";
 
 import { Event } from "features/events";
+import { getFormData } from "util/formUtil";
+import { searchEvent } from "features/events";
 
 const Tab3: React.FC = () => {
   const { register, handleSubmit } = useForm();
@@ -20,28 +22,25 @@ const Tab3: React.FC = () => {
   const [events, setEvent] = useState<Event[]>([]);
   const token = localStorage.getItem("token");
 
-  interface Event{
+  interface Event {
     photo: string;
     venue: string;
     title: string;
     start_date: string;
   }
-  
-  const Search = useCallback(async () => {
-    const response = await fetch("http://localhost:8080/api/v1/search", {
-      headers: {
-        Authorization: `${token}`,
-      },
-      body: data,
-    });
-    const event_data = await response.json();
-    console.log(event_data);
-    setEvent(event_data);
-  }, []);
 
-  useEffect(() => {
-    Search();
-  }, []);
+  const search = (data: any) => {
+    let params = {
+      title: data.title,
+      startdate: data.startdate,
+    };
+
+    searchEvent(params, token);
+  };
+
+  const onSubmit = (data: any) => {
+    search(data);
+  };
 
   return (
     <IonPage>
@@ -49,7 +48,7 @@ const Tab3: React.FC = () => {
         <IonText color="muted">
           <h2>Search Event</h2>
         </IonText>
-        <form onSubmit={handleSubmit((data) => setData(JSON.stringify(data)))}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <IonItem>
             <IonLabel>Title</IonLabel>
             <input {...register("title")} placeholder="Title" />
@@ -58,12 +57,7 @@ const Tab3: React.FC = () => {
             <IonLabel>Start Date</IonLabel>
             <input {...register("startdate")} placeholder="YYYY-MM-DD" />
           </IonItem>
-          <IonButton
-            onClick={() => Search()}
-            expand="block"
-            type="submit"
-            className="ion-margin-top"
-          >
+          <IonButton expand="block" type="submit" className="ion-margin-top">
             Search
           </IonButton>
         </form>
@@ -71,7 +65,7 @@ const Tab3: React.FC = () => {
         <IonText color="muted">
           <h2>Events Results</h2>
         </IonText>
-        {events.map((event:Event) => (
+        {events.map((event: Event) => (
           <IonCard>
             <img src={event.photo} />
             <IonCardHeader>
