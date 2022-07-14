@@ -8,6 +8,7 @@ import { IonContent } from "@ionic/react";
 
 // Layout Imports
 import { IonGrid, IonRow, IonCol } from "@ionic/react";
+import style from "./LoginForm.module.css"
 
 // Form Components
 import {
@@ -65,15 +66,16 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="login-form">
       <IonItem>
         <IonLabel position="floating">Username</IonLabel>
-        <IonInput {...register("email", { required: "Email is required!" })} />
+        <IonInput className="login-mobile-input"
+        {...register("email", { required: "Email is required!" })} />
       </IonItem>
       {showError("email")}
       <IonItem>
         <IonLabel position="floating">Password</IonLabel>
-        <IonInput
+        <IonInput className="login-mobile-input"
           {...register("password", { required: "Password is required!" })}
           type="password"
         />
@@ -87,7 +89,7 @@ const LoginForm: React.FC = () => {
         <IonLabel>Remember me</IonLabel>
         <IonCheckbox defaultChecked={true} slot="start" />
       </IonItem>
-      <IonButton className="ion-margin-top" type="submit" expand="block">
+      <IonButton className="ion-margin-top login-mobile-button" type="submit" expand="block">
         Login
       </IonButton>
     </form>

@@ -2,7 +2,7 @@
     background: url("../../assets/loginImg.jpg");
     background-size: cover;
     background-position: center;
-    height: 92vh;
+    height: 90vh;
 }
 
 .loginImageMobile {
@@ -17,8 +17,13 @@
 /* for mobile screens*/
 @media screen  and (min-width: 0px) and (max-width : 450px) { /**/ 
     .loginImage {
-        background: none;
+        display: none;
     }
+
+    .login-page ion-content::part(scroll) {
+        padding-top: 20%;
+    }
+
 }
 
 
@@ -42,6 +47,10 @@
     }
     ion-content::part(scroll){
         padding-top: 4.4%;
+    }
+
+    .login-form-column {
+        padding-top: 10%;
     }
 
 }
