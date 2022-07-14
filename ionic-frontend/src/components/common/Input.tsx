@@ -1,4 +1,4 @@
-import {
+/* import {
 	IonItem,
 	IonLabel,
 	IonTextarea,
@@ -43,3 +43,5 @@ const Input: React.FC<Props> = ({ name, label, type, requiredError }) => {
 };
 
 export default Input;
+ */
+export{}

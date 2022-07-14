@@ -1,4 +1,4 @@
-import {
+/* import {
 	IonContent,
 	IonHeader,
 	IonPage,
@@ -59,4 +59,6 @@ const AddEvent: React.FC = () => {
 	);
 };
 
-export default AddEvent;
+export default AddEvent; */
+
+export{}

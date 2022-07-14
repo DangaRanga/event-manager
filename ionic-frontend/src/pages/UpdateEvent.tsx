@@ -1,4 +1,4 @@
-import {
+/* import {
 	IonContent,
 	IonHeader,
 	IonPage,
@@ -55,4 +55,5 @@ const UpdateEvent: React.FC = () => {
 	);
 };
 
-export default UpdateEvent;
+export default UpdateEvent; */
+export {}

@@ -1,4 +1,4 @@
-import * as yup from 'yup';
+/* import * as yup from 'yup';
 import * as React from 'react';
 import { Formik, Form } from 'formik';
 import Input from './common/Input';
@@ -166,4 +166,5 @@ const EventForm: React.FC<Props> = ({onSubmit, event}) => {
 	);
 };
 
-export default EventForm;
+export default EventForm; */
+export{}

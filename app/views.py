@@ -132,7 +132,7 @@ def get_role(jwt_token):
 
 def filefunc(img):
     now = datetime.now().strftime("%m%d%Y%H%M%S%f")
-    ext = secure_filename(img).split(".")[-1]
+    ext = secure_filename(img.filename).split(".")[-1]
     a = f"{now}.{ext}"
     return a
 
@@ -143,7 +143,7 @@ def register():
     Adds a new regular user. 
     """
     form = RegisterForm()
-    data = request.get_json()
+
     if request.method == 'POST' and form.validate_on_submit():
         current_dt = datetime.now()
         image = form.photo.data

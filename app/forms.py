@@ -7,7 +7,7 @@ class RegisterForm(FlaskForm):
     fullname = StringField('Full Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    photo = FileField('Upload Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Images only!'])])
+    photo = FileField('Upload Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png','jpeg', 'Images only!'])])
 
 
 class LoginForm(FlaskForm):
