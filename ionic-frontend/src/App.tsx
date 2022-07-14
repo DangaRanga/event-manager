@@ -109,7 +109,7 @@ const App: React.FC = () => (
             <IonLabel>Register</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab3" href="/addEvents">
+          <IonTabButton tab="AddEvent" href="/addEvents">
             <IonIcon icon={personCircleOutline} />
             <IonLabel>Add Event</IonLabel>
           </IonTabButton>
