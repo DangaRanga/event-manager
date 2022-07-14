@@ -12,16 +12,18 @@ import React, { useState } from "react";
 import styles from "./MyEvents.module.css";
 
 export const MyEvents: React.FC = () => {
-  const [event, setEvent] = useState<Event>();
-  //const token = localStorage.getItem("token");
+  const [events, setEvents] = useState<any[]>();
+  const token = localStorage.getItem("token");
+  const userData = localStorage.getItem("user");
 
   useIonViewWillEnter(() => {
-    fetch("http://localhost:8080/api/v1/events" + "", {
+    const userID = JSON.parse(`${userData}`).id;
+    fetch(`http://localhost:8080/api/v1/user/${userID}/events` + "", {
       method: "GET",
-      /*headers: {
-          //'X-CSRFToken': token
-          Authorization: localStorage.getItem("token"),
-        },*/
+      headers: {
+        //'X-CSRFToken': token
+        Authorization: `${token}`,
+      },
       credentials: "same-origin",
     })
       .then(function (response) {
@@ -31,8 +33,8 @@ export const MyEvents: React.FC = () => {
         }
         return response.json();
       })
-      .then(function (jsonResponse: Event) {
-        setEvent(jsonResponse);
+      .then(function (jsonResponse) {
+        setEvents(jsonResponse);
       })
       .catch(function (error) {
         console.log(error);
@@ -44,6 +46,12 @@ export const MyEvents: React.FC = () => {
       <IonContent>
         <div className={styles.content_wrapper}>
           <EventCard title={"test event"} startDate={"August 20th"} />
+          {console.log(events?.length)}
+          {events?.map((event) => {
+            <div>
+              <EventCard title={event.title} startDate={event.start_date} />
+            </div>;
+          })}
         </div>
       </IonContent>
     </IonPage>

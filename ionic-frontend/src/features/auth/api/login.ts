@@ -23,5 +23,7 @@ export async function login(data: LoginCredentials | any) {
     const loginData = response
     console.log(loginData.data);
     localStorage.setItem("token", loginData.data.token)
+  
+    localStorage.setItem("user",JSON.stringify(loginData.user) )
 
 }

@@ -73,8 +73,8 @@ def regular_required(func):
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        #auth = "Bearer "+ request.cookies.get('token', None)
-        #auth = "Bearer "+ request.headers['x-access-tokens']
+        # auth = "Bearer "+ request.cookies.get('token', None)
+        # auth = "Bearer "+ request.headers['x-access-tokens']
         auth = request.headers['Authorization']
 
         if not auth:
@@ -140,7 +140,7 @@ def filefunc(img):
 @app.route('/api/v1/register', methods=['POST'])
 def register():
     """
-    Adds a new regular user. 
+    Adds a new regular user.
     """
     form = RegisterForm()
 
@@ -213,11 +213,11 @@ def load_user(id):
 
 
 @app.route('/api/v1/events', methods=['POST', 'GET'])
-# @requires_auth
+@requires_auth
 def events():
     # Form data
     form = AddEventsForm()
-    #jwt_token = request.headers['Authorization']
+    jwt_token = request.headers['Authorization']
 
     # Validate file upload on submit
     if request.method == 'POST' and form.validate_on_submit():
@@ -240,7 +240,7 @@ def events():
         status = "pending"
 
         photo = filename
-        uid = 10  # get_current_id(jwt_token)
+        uid = get_current_id(jwt_token)
         created_at = current_dt.strftime("%Y-%m-%d " + "%X")
         event = Events(uid, title, start_date, end_date, start_time, end_time,
                        description, venue, photo, website_url, status)
@@ -253,19 +253,19 @@ def events():
         return jsonify(title=title, start_date=start_date, end_date=end_date, start_time=start_time, end_time=end_time, description=description,
                        venue=venue, photo=filename, website_url=website_url, status=status, user_id=uid, created_at=created_at), 201
 
-   # if (get_role(jwt_token) == 'regular'):
-    if request.method == 'GET':
-        event_query_data = db.session.query(Events).order_by(
-            Events.start_date.asc()).filter_by(status='published').all()
-        response_data = formatEvents(event_query_data)
-        return jsonify(response_data), 200
-    """
+    if (get_role(jwt_token) == 'regular'):
+        if request.method == 'GET':
+            event_query_data = db.session.query(Events).order_by(
+                Events.start_date.asc()).filter_by(status='published').all()
+            response_data = formatEvents(event_query_data)
+            return jsonify(response_data), 200
+
     elif (get_role(jwt_token) == 'admin'):
         if request.method == 'GET':
             event_query_data = db.session.query(Events).order_by(
                 Events.start_date.asc()).filter_by(status='pending').all()
             response_data = formatEvents(event_query_data)
-            return jsonify(response_data), 200 """
+            return jsonify(response_data), 200
 
     print(form.errors)
 
@@ -274,9 +274,9 @@ def events():
 
 # Change status publishing
 @app.route('/api/v1/events/<event_id>', methods=['POST', 'GET', 'PATCH', 'DELETE'])
-# @requires_auth
+@requires_auth
 def event_detail(event_id):
-    #jwt_token = request.headers['Authorization']
+    jwt_token = request.headers['Authorization']
 
     if request.method == 'POST':
         event = db.session.query(Events).get(event_id)
@@ -332,14 +332,14 @@ def event_detail(event_id):
         response_data = formatEvents(event_query_data)[0]
         return jsonify(response_data), 200
 
-    # if (get_role(jwt_token)=='admin'):
-    #     event = db.session.query(Events).get(event_id)
-    #     if request.method == 'PATCH':
-    #         if event != None:
-    #             event.status = "published"
-    #             db.session.commit()
-    #             return jsonify(message = "Status Successfully Updated"),200
-    #         return jsonify(message = "Event by id " + event_id + "not found"),404
+    if (get_role(jwt_token) == 'admin'):
+        event = db.session.query(Events).get(event_id)
+        if request.method == 'PATCH':
+            if event != None:
+                event.status = "published"
+                db.session.commit()
+                return jsonify(message="Status Successfully Updated"), 200
+            return jsonify(message="Event by id " + event_id + "not found"), 404
 
 
 @app.route('/api/v1/user/<user_id>/events', methods=['GET'])
