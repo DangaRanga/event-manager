@@ -5,3 +5,11 @@ export interface Event{
     end_date?: string;
     photo: string;
 }
+
+export interface EventCardProps {
+    title: string;
+    startDate: string;
+    endDate?: string;
+    status?: string;
+    imgUrl?: string;
+  }

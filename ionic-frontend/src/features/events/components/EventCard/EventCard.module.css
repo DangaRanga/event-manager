@@ -1,0 +1,15 @@
+
+.cardContainer{
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.cardContent{
+    margin: 0 12px;
+}
+@media screen and (min-width: 451px) and (max-width : 1023px) {
+}
+
+@media screen and (min-width: 1024px) {
+}

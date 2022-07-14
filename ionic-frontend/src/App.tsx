@@ -11,10 +11,20 @@ import {
   setupIonicReact,
   IonToolbar,
   IonTitle,
-  IonButton
+  IonButton,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { ellipse, home, layersOutline, personCircleOutline, search, square, triangle, wine, wineOutline } from 'ionicons/icons';
+import {
+  ellipse,
+  home,
+  layersOutline,
+  personCircleOutline,
+  search,
+  square,
+  triangle,
+  wine,
+  wineOutline,
+} from "ionicons/icons";
 
 // Component Imports
 import NavBar from "components/NavBar/NavBar";
@@ -23,6 +33,7 @@ import { ToastContainer, Zoom } from "react-toastify";
 // Page Imports
 import Tab1 from "./pages/Tab1";
 import AddEvent from "./pages/AddEvents";
+import { MyEvents } from "pages/Events/MyEvents";
 //import UpdateEvent from "./pages/UpdateEvent";
 import Tab3 from "./pages/Tab3";
 import Register from "./pages/Register";
@@ -48,7 +59,7 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import "react-toastify/dist/ReactToastify.css";
 
-import './App.css'
+import "./App.css";
 import EventDetails from "pages/Events/EventDetails";
 //import UpdateEvent from "pages/UpdateEvent";
 
@@ -56,43 +67,36 @@ setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-
-    <IonHeader >
-      
-        <div className='application-nav'> 
-          <div>
-            <IonTitle color="primary">Eventus</IonTitle>
-          </div>
-          <div className="nav-link-buttons">
-            <IonButton 
-              routerLink="/eventdetails"
-              fill="clear"
-            >Home</IonButton>
-            <IonButton 
-              routerLink="/register"
-              fill="clear"
-            >Register</IonButton>
-            <IonButton 
-              routerLink="/login"
-              fill="clear"
-            >Login</IonButton>
-          </div>
+    <IonHeader>
+      <div className="application-nav">
+        <div>
+          <IonTitle color="primary">Eventus</IonTitle>
         </div>
-      
+        <div className="nav-link-buttons">
+          <IonButton routerLink="/eventdetails" fill="clear">
+            Home
+          </IonButton>
+          <IonButton routerLink="/register" fill="clear">
+            Register
+          </IonButton>
+          <IonButton routerLink="/login" fill="clear">
+            Login
+          </IonButton>
+        </div>
+      </div>
     </IonHeader>
 
     <IonReactRouter>
       <IonRouterOutlet>
         <Route exact path="/login">
-            <LoginPage></LoginPage>
+          <LoginPage></LoginPage>
         </Route>
         <Route exact path="/register">
-            <Register></Register>
+          <Register></Register>
         </Route>
         <Route exact path="/eventdetails">
-            <EventDetails></EventDetails>
+          <EventDetails></EventDetails>
         </Route>
-  
       </IonRouterOutlet>
     </IonReactRouter>
 
@@ -102,8 +106,7 @@ const App: React.FC = () => (
           <Route exact path="/tab1">
             <Tab1 />
           </Route>
-          <Route exact path="/tab2">
-          </Route>
+          <Route exact path="/tab2"></Route>
           <Route path="/tab3">
             <Tab3 />
           </Route>
@@ -111,7 +114,7 @@ const App: React.FC = () => (
             <Register />
           </Route>
           <Route path="/addEvents">
-            <AddEvent/>
+            <AddEvent />
           </Route>
           <Route exact path="/">
             <Redirect to="/tab1" />
@@ -119,7 +122,9 @@ const App: React.FC = () => (
           <Route exact path="/login">
             <LoginPage />
           </Route>
-          <Route exact path="/update">
+
+          <Route exact path="/my-events">
+            <MyEvents />
             {/* <UpdateEvent/> */}
           </Route>
         </IonRouterOutlet>
@@ -130,14 +135,14 @@ const App: React.FC = () => (
             <IonLabel>Tab 1</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={search} />
-            <IonLabel>Tab 3</IonLabel>
+          <IonTabButton tab="tab2" href="/my-events">
+            <IonIcon icon={wineOutline} />
+            <IonLabel>My Events</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={wineOutline} />
-            <IonLabel>Tab 2</IonLabel>
+          <IonTabButton tab="tab3" href="/tab3">
+            <IonIcon icon={search} />
+            <IonLabel>Search Events</IonLabel>
           </IonTabButton>
 
           <IonTabButton tab="register" href="/register">
@@ -154,9 +159,7 @@ const App: React.FC = () => (
             <IonIcon icon={personCircleOutline} />
             <IonLabel>Update Event</IonLabel>
           </IonTabButton>
-          
         </IonTabBar>
-        
       </IonTabs>
     </IonReactRouter>
     <ToastContainer

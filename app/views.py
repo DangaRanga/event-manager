@@ -73,8 +73,8 @@ def regular_required(func):
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        #auth = "Bearer "+ request.cookies.get('token', None)
-        #auth = "Bearer "+ request.headers['x-access-tokens']
+        # auth = "Bearer "+ request.cookies.get('token', None)
+        # auth = "Bearer "+ request.headers['x-access-tokens']
         auth = request.headers['Authorization']
 
         if not auth:
@@ -140,7 +140,7 @@ def filefunc(img):
 @app.route('/api/v1/register', methods=['POST'])
 def register():
     """
-    Adds a new regular user. 
+    Adds a new regular user.
     """
     form = RegisterForm()
 
@@ -213,7 +213,7 @@ def load_user(id):
 
 
 @app.route('/api/v1/events', methods=['POST', 'GET'])
-# @requires_auth
+@requires_auth
 def events():
     # Form data
     form = AddEventsForm()
@@ -249,7 +249,7 @@ def events():
         db.session.commit()
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        return jsonify(title=title, start_date=start_date, end_date=end_date, start_time=start_time, end_time = end_time, description=description,
+        return jsonify(title=title, start_date=start_date, end_date=end_date, start_time=start_time, end_time=end_time, description=description,
                        venue=venue, photo=filename, website_url=website_url, status=status, user_id=uid, created_at=created_at), 201
 
     if (get_role(jwt_token) == 'regular'):
@@ -273,7 +273,7 @@ def events():
 
 # Change status publishing
 @app.route('/api/v1/events/<event_id>', methods=['POST', 'GET', 'PATCH', 'DELETE'])
-# @requires_auth
+@requires_auth
 def event_detail(event_id):
     jwt_token = request.headers['Authorization']
 
@@ -331,14 +331,14 @@ def event_detail(event_id):
         response_data = formatEvents(event_query_data)[0]
         return jsonify(response_data), 200
 
-    if (get_role(jwt_token)=='admin'):
+    if (get_role(jwt_token) == 'admin'):
         event = db.session.query(Events).get(event_id)
         if request.method == 'PATCH':
             if event != None:
                 event.status = "published"
                 db.session.commit()
-                return jsonify(message = "Status Successfully Updated"),200
-            return jsonify(message = "Event by id " + event_id + "not found"),404
+                return jsonify(message="Status Successfully Updated"), 200
+            return jsonify(message="Event by id " + event_id + "not found"), 404
 
 
 @app.route('/api/v1/user/<user_id>/events', methods=['GET'])
@@ -353,10 +353,10 @@ def user_event(user_id):
 
 
 @app.route('/api/v1/search', methods=['POST'])
-#@requires_auth
+# @requires_auth
 def search():
-   if request.method == 'POST':  
-        
+    if request.method == 'POST':
+
         form = SearchForm()
 
         # Validate file upload on submit
@@ -382,7 +382,7 @@ def search():
 
 
 @app.route('/api/v2/search', methods=['POST'])
-#@requires_auth
+# @requires_auth
 def searchv2():
     if request.method == 'POST':
 
