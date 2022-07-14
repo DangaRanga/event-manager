@@ -1,4 +1,8 @@
-.ion-label{
-   color: #d1410c;
+ion-label{
+   color: #d1410c; 
 
+}
+
+.label {
+      color: #d1410c !important; 
 }

@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import * as React from 'react';
 import { Formik, Form } from 'formik';
 import Input from './common/Input';
 import {
@@ -90,13 +91,14 @@ const validationSchema = yup.object().shape({
 	endtime: yup.string().required(model.endtime.requiredError),
 	venue: yup.string().required(model.venue.requiredError),
 	website_url: yup.string().required(model.website_url.requiredError),
-	photo: yup.string().required(model.photo.requiredError),
+	// photo: yup.file().required(model.photo.requiredError),
 });
 
 type Props = {
 	onSubmit: (values:any, actions:any) => void;
+	event?: any;
 };
-const EventForm: React.FC<Props> = ({onSubmit}) => {
+const EventForm: React.FC<Props> = ({onSubmit, event}) => {
 
 	const sections = [
 		{title: 'Basic Details', instructions: 'Name your event and tell event-goers why they should come.', fields: [model.title, model.description] },
@@ -111,8 +113,18 @@ const EventForm: React.FC<Props> = ({onSubmit}) => {
 			validationSchema={validationSchema}
 			onSubmit={onSubmit}
 		>
-			{({ values, setFieldValue, errors }) => {
+			{  function event({ values, setFieldValue, errors }) {
 				// console.log(values, errors);
+
+      React.useEffect(()=> {
+					if (event){
+					const keys = Object.keys(values);
+                    Object.entries(event)?.forEach(([key,value])=> (
+                         keys.includes(key) && setFieldValue(key, value)))
+
+					}
+				}, [event])
+
 				return (
 					<Form id={'event-form'}>
 						<IonGrid>

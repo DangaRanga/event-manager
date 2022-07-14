@@ -21,7 +21,7 @@ import { ToastContainer, Zoom } from "react-toastify";
 
 // Page Imports
 import Tab1 from "./pages/Tab1";
-import Tab2 from "./pages/Tab2";
+import Tab2 from "./pages/AddEvent";
 import Tab3 from "./pages/Tab3";
 import LoginPage from "./pages/Login/LoginPage";
 
@@ -46,6 +46,7 @@ import "./theme/variables.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import './App.css'
+import UpdateEvent from "pages/UpdateEvent";
 
 setupIonicReact();
 
@@ -75,6 +76,9 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/login">
             <LoginPage />
+          </Route>
+          <Route exact path="/update">
+            <UpdateEvent />
           </Route>
         </IonRouterOutlet>
 
