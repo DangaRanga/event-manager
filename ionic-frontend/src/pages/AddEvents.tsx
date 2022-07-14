@@ -7,6 +7,8 @@ import {
   IonTextarea,
 } from "@ionic/react";
 
+import { useHistory } from "react-router";
+import { toast } from "react-toastify";
 import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,6 +28,7 @@ const AddEvent: React.FC = () => {
   const [venue, setVenue] = useState<string>();
   const [website_url, setWebsite] = useState<string>();
   const [photo, setPhoto] = useState<string>();
+  const history = useHistory();
 
   const token = localStorage.getItem("token");
 
@@ -54,8 +57,23 @@ const AddEvent: React.FC = () => {
         },
         body: form_data,
         method: "POST",
-      });
-      const event_data = await response.json();
+      })
+        .then((response) => {
+          if (!response.ok) {
+            toast.error("One or more required fields are empty");
+          } else {
+            toast.success("Event Successfully Added");
+            return response.json();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return error;
+        });
+      const event_data = await response;
+      if (event_data) {
+        history.push("/my-events");
+      }
     }
   }
 
