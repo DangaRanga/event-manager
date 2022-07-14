@@ -231,6 +231,8 @@ def events():
         start_date = form.startdate.data
 
         end_date = form.enddate.data
+        start_time = form.starttime.data
+        end_time = form.endtime.data
         description = form.description.data
         venue = form.venue.data
         website_url = request.form['website_url']
@@ -240,13 +242,15 @@ def events():
         photo = filename
         uid = get_current_id(jwt_token)
         created_at = current_dt.strftime("%Y-%m-%d " + "%X")
-        event = Events(uid, title, start_date, end_date,
+        event = Events(uid, title, start_date, end_date, start_time, end_time,
                        description, venue, photo, website_url, status)
+        #    def __init__(self, userid, title, start_date, end_date, start_time, end_time,
+        #  description, venue, image_url, website_url, status):
         db.session.add(event)
         db.session.commit()
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        return jsonify(title=title, start_date=start_date, end_date=end_date, description=description,
+        return jsonify(title=title, start_date=start_date, end_date=end_date, start_time=start_time, end_time = end_time, description=description,
                        venue=venue, photo=filename, website_url=website_url, status=status, user_id=uid, created_at=created_at), 201
 
     if (get_role(jwt_token) == 'regular'):
