@@ -1,3 +1,4 @@
+// Ionic Base Imports
 import {
   IonContent,
   IonHeader,
@@ -6,11 +7,27 @@ import {
   IonToolbar,
 } from "@ionic/react";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+// Layout imports
+import { IonGrid, IonRow, IonCol } from "@ionic/react";
+
+// Component Imports
+import LoginForm from "../../features/auth/components/LoginForm/LoginForm";
 
 const LoginPage: React.FC = () => {
-  return <IonPage></IonPage>;
+  return (
+    <IonPage className="ion-margin">
+      <IonContent>
+        <IonGrid>
+          <IonRow>
+            <IonCol>
+              <LoginForm />
+            </IonCol>
+            <IonCol>Content</IonCol>
+          </IonRow>
+        </IonGrid>
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default LoginPage;

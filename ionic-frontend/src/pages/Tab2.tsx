@@ -7,20 +7,24 @@ import {
 } from '@ionic/react';
 import './Tab2.css';
 import EventForm from '../components/EventForm';
+import axios from 'axios';
 
 const Tab2: React.FC = () => {
 
-	const onSubmit= async(values:any, actions:any) => {
-		try{
-		
-			const config = {
-        'Authorization': ''
-			}
-    //  const result = await axios.post('localhoat:8080/api/v1/events', values, config);
 
+	function getFormData(object: any) {
+    const formData = new FormData();
+    Object.keys(object).forEach(key => formData.append(key, object[key]));
+    return formData;
+}
+
+	const onSubmit= async(values:any, actions:any) => {
+	try{
+		const token = "token"
+		const result = await axios.post('localhoat:8080/api/v1/events', getFormData(values), {headers: {    Authorization: 'Bearer ' + token}}).data;
 	    console.log(values)
 		}catch(error: any){
-
+           console.log(error);
 		}
 
 	}

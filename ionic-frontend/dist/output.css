@@ -590,3 +590,7 @@ video {
 .w-6\/12 {
   width: 50%;
 }
+
+.outline {
+  outline-style: solid;
+}

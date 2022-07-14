@@ -43,12 +43,16 @@ const EventDetails: React.FC = () => {
           <IonTitle>Tab 2</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="ion-padding details-container">
+      <IonContent className="details-container">
         <div>
-          <IonImg src={'https://total-event.com/wp-content/uploads/2018/01/event-planning-microsoft-ignite.jpg'}>
+          <IonImg 
+          src={'https://total-event.com/wp-content/uploads/2018/01/event-planning-microsoft-ignite.jpg'}
+          className="image-details-image" 
+          >
           </IonImg>
         </div>
-        <div>
+
+        <div className="ion-padding">
           
 
 
