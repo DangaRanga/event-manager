@@ -21,7 +21,7 @@ import { ToastContainer, Zoom } from "react-toastify";
 
 // Page Imports
 import Tab1 from "./pages/Tab1";
-//import Tab2 from "./pages/AddEvent";
+import AddEvent from "./pages/AddEvents";
 import Tab3 from "./pages/Tab3";
 import Register from "./pages/Register";
 import LoginPage from "./pages/Login/LoginPage";
@@ -74,6 +74,9 @@ const App: React.FC = () => (
           <Route path="/register">
             <Register />
           </Route>
+          <Route path="/addEvents">
+            <AddEvent/>
+          </Route>
           <Route exact path="/">
             <Redirect to="/tab1" />
           </Route>
@@ -106,9 +109,9 @@ const App: React.FC = () => (
             <IonLabel>Register</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="tab3" href="/addEvents">
             <IonIcon icon={personCircleOutline} />
-            <IonLabel>Tab 2</IonLabel>
+            <IonLabel>Add Event</IonLabel>
           </IonTabButton>
 
           <IonTabButton tab="tab3" href="/tab3">
