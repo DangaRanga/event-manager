@@ -1,25 +1,18 @@
-import { IonContent, IonPage, useIonViewWillEnter } from "@ionic/react";
+import { IonContent, IonPage } from "@ionic/react";
 import { IonText, IonItem, IonLabel, IonButton } from "@ionic/react";
-import {
-  IonCard,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonCardContent,
-} from "@ionic/react";
-import React, { SyntheticEvent, useCallback, useEffect } from "react";
+
+import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import "./Tab3.css";
+import "./Register.css";
 
-import { Event } from "features/events";
+
 import { getFormData } from "../util/formUtil";
-import { searchEvent } from "features/events";
+
 
 const Register: React.FC = () => {
-  const { register, handleSubmit } = useForm();
-  const [data, setData] = useState<any>({});
-  const [user, setUser] = useState<User[]>();
+  const {  handleSubmit } = useForm();
+
   const [fullname, setName] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [email, setEmail] = useState<string>();
@@ -28,12 +21,6 @@ const Register: React.FC = () => {
 
   const token = localStorage.getItem("token");
 
-  interface User {
-    photo: string;
-    email: string;
-    password: string;
-    fullname: string;
-  }
 
   async function register_user () {
     let params = {
