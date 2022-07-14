@@ -1,7 +1,7 @@
 export async function searchEvent(data: any, token:string | null){
     const response = await fetch("http://localhost:8080/api/v1/search", {
       headers: {
-        Authorization: `${token}`,
+        //Authorization: `${token}`,
       },
       body: data,
       method: "POST",

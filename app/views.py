@@ -360,10 +360,13 @@ def search():
         title = form.title.data
         date = form.startdate.data
 
+        print(title)
+        print(date)
+
         like_title = "%{}%".format(title)
         like_date = "%{}%".format(date)
 
-        if (title == None or date == None):
+        if (title == 'undefined' or date == 'undefined'):
             event_query_data = db.session.query(Events).filter(
                 or_(Events.start_date.like(like_date), Events.title.like(like_title)))
             response_data = formatEvents(event_query_data)
