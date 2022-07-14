@@ -39,7 +39,7 @@ const Tab3: React.FC = () => {
 
   useEffect(() => {
     Search();
-  }, [Search]);
+  }, []);
 
   return (
     <IonPage>

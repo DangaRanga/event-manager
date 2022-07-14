@@ -245,9 +245,9 @@ def events():
 
 
 @app.route('/api/v1/events/<event_id>', methods=['POST','GET','PATCH', 'DELETE']) #Change status publishing
-@requires_auth
+#@requires_auth
 def event_detail(event_id):
-    jwt_token = request.headers['Authorization']
+    #jwt_token = request.headers['Authorization']
 
     if request.method == 'POST':
         event = db.session.query(Events).get(event_id)
@@ -301,14 +301,14 @@ def event_detail(event_id):
         response_data = formatEvents(event_query_data)[0]
         return jsonify(response_data),200
     
-    if (get_role(jwt_token)=='admin'):
-        event = db.session.query(Events).get(event_id)
-        if request.method == 'PATCH':
-            if event != None:
-                event.status = "published"
-                db.session.commit()
-                return jsonify(message = "Status Successfully Updated"),200
-            return jsonify(message = "Event by id " + event_id + "not found"),404
+    # if (get_role(jwt_token)=='admin'):
+    #     event = db.session.query(Events).get(event_id)
+    #     if request.method == 'PATCH':
+    #         if event != None:
+    #             event.status = "published"
+    #             db.session.commit()
+    #             return jsonify(message = "Status Successfully Updated"),200
+    #         return jsonify(message = "Event by id " + event_id + "not found"),404
 
 
 
@@ -349,9 +349,10 @@ def search():
         
 @app.route('/api/v2/search', methods=['POST'])
 @requires_auth
-def search():
+def searchv2():
    if request.method == 'POST':  
-        data=json.loads(request.data)
+
+        data=request.get_json()
         title= data["title"]
         date = data["startdate"]
         like_title = "%{}%".format(title) 
