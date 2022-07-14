@@ -10,10 +10,20 @@ import {
   IonTabs,
   setupIonicReact,
   IonToolbar,
-  IonTitle
+  IonTitle,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { ellipse, home, layersOutline, personCircleOutline, search, square, triangle, wine, wineOutline } from 'ionicons/icons';
+import {
+  ellipse,
+  home,
+  layersOutline,
+  personCircleOutline,
+  search,
+  square,
+  triangle,
+  wine,
+  wineOutline,
+} from "ionicons/icons";
 
 // Component Imports
 import NavBar from "components/NavBar/NavBar";
@@ -23,6 +33,7 @@ import { ToastContainer, Zoom } from "react-toastify";
 import Tab1 from "./pages/Tab1";
 import AddEvent from "./pages/AddEvents";
 import UpdateEvent from "./pages/UpdateEvent";
+import { MyEvents } from "pages/Events/MyEvents";
 import Tab3 from "./pages/Tab3";
 import Register from "./pages/Register";
 import LoginPage from "./pages/Login/LoginPage";
@@ -47,15 +58,14 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import "react-toastify/dist/ReactToastify.css";
 
-import './App.css'
+import "./App.css";
 //import UpdateEvent from "pages/UpdateEvent";
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-
-    <IonHeader className='application-navigation'>
+    <IonHeader className="application-navigation">
       <IonToolbar>
         <IonTitle>Navigation Bar</IonTitle>
       </IonToolbar>
@@ -67,8 +77,7 @@ const App: React.FC = () => (
           <Route exact path="/tab1">
             <Tab1 />
           </Route>
-          <Route exact path="/tab2">
-          </Route>
+          <Route exact path="/tab2"></Route>
           <Route path="/tab3">
             <Tab3 />
           </Route>
@@ -76,7 +85,7 @@ const App: React.FC = () => (
             <Register />
           </Route>
           <Route path="/addEvents">
-            <AddEvent/>
+            <AddEvent />
           </Route>
           <Route exact path="/">
             <Redirect to="/tab1" />
@@ -85,7 +94,10 @@ const App: React.FC = () => (
             <LoginPage />
           </Route>
           <Route exact path="/update">
-            <UpdateEvent/>
+            <UpdateEvent />
+          </Route>
+          <Route exact path="/my-events">
+            <MyEvents />
           </Route>
         </IonRouterOutlet>
 
@@ -95,14 +107,14 @@ const App: React.FC = () => (
             <IonLabel>Tab 1</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={search} />
-            <IonLabel>Tab 3</IonLabel>
+          <IonTabButton tab="tab2" href="/my-events">
+            <IonIcon icon={wineOutline} />
+            <IonLabel>My Events</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={wineOutline} />
-            <IonLabel>Tab 2</IonLabel>
+          <IonTabButton tab="tab3" href="/tab3">
+            <IonIcon icon={search} />
+            <IonLabel>Search Events</IonLabel>
           </IonTabButton>
 
           <IonTabButton tab="register" href="/register">
@@ -119,9 +131,7 @@ const App: React.FC = () => (
             <IonIcon icon={personCircleOutline} />
             <IonLabel>Update Event</IonLabel>
           </IonTabButton>
-          
         </IonTabBar>
-        
       </IonTabs>
     </IonReactRouter>
     <ToastContainer

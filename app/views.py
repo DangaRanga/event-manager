@@ -240,7 +240,7 @@ def events():
         status = "pending"
 
         photo = filename
-        uid = 10#get_current_id(jwt_token)
+        uid = 10  # get_current_id(jwt_token)
         created_at = current_dt.strftime("%Y-%m-%d " + "%X")
         event = Events(uid, title, start_date, end_date, start_time, end_time,
                        description, venue, photo, website_url, status)
@@ -250,16 +250,16 @@ def events():
         db.session.commit()
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        return jsonify(title=title, start_date=start_date, end_date=end_date, start_time=start_time, end_time = end_time, description=description,
+        return jsonify(title=title, start_date=start_date, end_date=end_date, start_time=start_time, end_time=end_time, description=description,
                        venue=venue, photo=filename, website_url=website_url, status=status, user_id=uid, created_at=created_at), 201
 
-    """ if (get_role(jwt_token) == 'regular'):
-        if request.method == 'GET':
-            event_query_data = db.session.query(Events).order_by(
-                Events.start_date.asc()).filter_by(status='published').all()
-            response_data = formatEvents(event_query_data)
-            return jsonify(response_data), 200
-
+   # if (get_role(jwt_token) == 'regular'):
+    if request.method == 'GET':
+        event_query_data = db.session.query(Events).order_by(
+            Events.start_date.asc()).filter_by(status='published').all()
+        response_data = formatEvents(event_query_data)
+        return jsonify(response_data), 200
+    """
     elif (get_role(jwt_token) == 'admin'):
         if request.method == 'GET':
             event_query_data = db.session.query(Events).order_by(
@@ -354,10 +354,10 @@ def user_event(user_id):
 
 
 @app.route('/api/v1/search', methods=['POST'])
-#@requires_auth
+# @requires_auth
 def search():
-   if request.method == 'POST':  
-        
+    if request.method == 'POST':
+
         form = SearchForm()
 
         # Validate file upload on submit
@@ -383,7 +383,7 @@ def search():
 
 
 @app.route('/api/v2/search', methods=['POST'])
-#@requires_auth
+# @requires_auth
 def searchv2():
     if request.method == 'POST':
 

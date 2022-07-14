@@ -14,6 +14,7 @@ export function login(data: LoginCredentials | any) {
   })
     .then((response) => {
       console.log("Success ========>", response);
+     // localStorage.setItem()
     })
     .catch((error) => {
       console.log("Error ========>", error);
