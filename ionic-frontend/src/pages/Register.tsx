@@ -53,9 +53,8 @@ const Register: React.FC = () => {
   };
 
   const setImage = (_event: any) => {
-    let f = _event.target.files![0];
+    let f = _event.target.files![0].name;
     setPhoto(f);
-    console.log(f)
   }
 
   return (
