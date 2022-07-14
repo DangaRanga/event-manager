@@ -73,15 +73,29 @@ const App: React.FC = () => (
           <IonTitle color="primary">Eventus</IonTitle>
         </div>
         <div className="nav-link-buttons">
-          <IonButton routerLink="/eventdetails" fill="clear">
-            Home
-          </IonButton>
-          <IonButton routerLink="/register" fill="clear">
-            Register
-          </IonButton>
-          <IonButton routerLink="/login" fill="clear">
-            Login
-          </IonButton>
+          {localStorage.getItem("token") ? (
+            <span>
+              <IonButton routerLink="/my-events" fill="clear">
+                My Events
+              </IonButton>
+
+              <IonButton routerLink="/addEvents" fill="clear">
+                Add Events
+              </IonButton>
+              <IonButton routerLink="/search" fill="clear">
+                Search
+              </IonButton>
+            </span>
+          ) : (
+            <span>
+              <IonButton routerLink="/register" fill="clear">
+                Register
+              </IonButton>
+              <IonButton routerLink="/login" fill="clear">
+                Login
+              </IonButton>
+            </span>
+          )}
         </div>
       </div>
     </IonHeader>
@@ -94,7 +108,7 @@ const App: React.FC = () => (
         <Route exact path="/register">
           <Register></Register>
         </Route>
-        <Route exact path="/eventdetails">
+        <Route exact path="/event-details/:eventid">
           <EventDetails></EventDetails>
         </Route>
       </IonRouterOutlet>
@@ -103,11 +117,7 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1 />
-          </Route>
-          <Route exact path="/tab2"></Route>
-          <Route path="/tab3">
+          <Route path="/search">
             <Tab3 />
           </Route>
           <Route path="/register">
@@ -130,17 +140,18 @@ const App: React.FC = () => (
         </IonRouterOutlet>
 
         <IonTabBar slot="bottom">
+          {/*}
           <IonTabButton tab="tab1" href="/tab1">
             <IonIcon icon={home} />
             <IonLabel>Tab 1</IonLabel>
-          </IonTabButton>
+          </IonTabButton>*/}
 
           <IonTabButton tab="tab2" href="/my-events">
             <IonIcon icon={wineOutline} />
             <IonLabel>My Events</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="tab3" href="/search">
             <IonIcon icon={search} />
             <IonLabel>Search Events</IonLabel>
           </IonTabButton>
