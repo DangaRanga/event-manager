@@ -353,7 +353,7 @@ def user_event(user_id):
 
 
 @app.route('/api/v1/search', methods=['POST'])
-# @requires_auth
+@requires_auth
 def search():
     if request.method == 'POST':
 

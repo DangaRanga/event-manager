@@ -30,12 +30,14 @@ const EventDetails: React.FC = () => {
 
   useIonViewWillEnter(()=>{
 
+    const token = localStorage.getItem("token");
+
     fetch("http://localhost:8080/api/v1/events/5"+'', {
       method: "GET",
-      /*headers: {
+      headers: {
         //'X-CSRFToken': token
-        Authorization: localStorage.getItem("token"),
-      },*/
+        Authorization: `${token}`
+      },
       credentials: "same-origin",
     })
       .then(function (response) {
