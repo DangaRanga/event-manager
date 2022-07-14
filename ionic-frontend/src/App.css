@@ -1,0 +1,41 @@
+
+.app-back-button{
+    margin: 4%;
+}
+
+    
+
+/* for mobile screens*/
+@media screen  and (max-width : 414px) { /*and (min-width: 360px)*/ 
+    
+    .application-navigation{
+        display: none;
+    }
+    ion-tab-bar{
+        display: block;
+    }
+    
+}
+
+
+/* for tablet screens*/
+@media screen and (min-width: 415px) and (max-width : 1280px) {
+
+    .application-navigation{
+        display: none;
+    }
+    
+}
+ 
+/* for desktop screens*/
+@media screen and (min-width: 1024px) {
+    ion-tab-bar{
+        display: none;
+    }
+    .application-navigation{
+        display:block;
+    }
+    .app-back-button{
+        display: none;
+    }
+}

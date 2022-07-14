@@ -9,7 +9,7 @@ app.config.from_object(Config)
 
 app_cors.init_app(app, resources={r"/*" : {"orgins": "*"}})
 
-app.config['SESSION_TYPE'] = 'filesystem'
+#app.config['SESSION_TYPE'] = 'filesystem'
 db.init_app(app)
 migrate.init_app(app, db)
 app_session.init_app(app)

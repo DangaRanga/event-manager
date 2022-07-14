@@ -270,9 +270,9 @@ def events():
 
 # Change status publishing
 @app.route('/api/v1/events/<event_id>', methods=['POST', 'GET', 'PATCH', 'DELETE'])
-@requires_auth
+# @requires_auth
 def event_detail(event_id):
-    jwt_token = request.headers['Authorization']
+    #jwt_token = request.headers['Authorization']
 
     if request.method == 'POST':
         event = db.session.query(Events).get(event_id)
@@ -328,14 +328,14 @@ def event_detail(event_id):
         response_data = formatEvents(event_query_data)[0]
         return jsonify(response_data), 200
 
-    if (get_role(jwt_token) == 'admin'):
-        event = db.session.query(Events).get(event_id)
-        if request.method == 'PATCH':
-            if event != None:
-                event.status = "published"
-                db.session.commit()
-                return jsonify(message="Status Successfully Updated"), 200
-            return jsonify(message="Event by id " + event_id + "not found"), 404
+    # if (get_role(jwt_token)=='admin'):
+    #     event = db.session.query(Events).get(event_id)
+    #     if request.method == 'PATCH':
+    #         if event != None:
+    #             event.status = "published"
+    #             db.session.commit()
+    #             return jsonify(message = "Status Successfully Updated"),200
+    #         return jsonify(message = "Event by id " + event_id + "not found"),404
 
 
 @app.route('/api/v1/user/<user_id>/events', methods=['GET'])
@@ -356,19 +356,45 @@ def search():
         form = SearchForm()
 
         # Validate file upload on submit
-        if form.validate_on_submit():
-            title = form.title.data
-            date = form.startdate.data
-            if (title == "" or date == ""):
-                event_query_data = db.session.query(Events).filter(
-                    or_(Events.start_date == date, Events.title == title))
-                response_data = formatEvents(event_query_data)
-                return jsonify(response_data), 200
-            else:
-                event_query_data = db.session.query(Events).filter(
-                    Events.start_date == date, Events.title == title)
-                response_data = formatEvents(event_query_data)
-                return jsonify(response_data), 200
+        title = form.title.data
+        date = form.startdate.data
+
+        like_title = "%{}%".format(title)
+        like_date = "%{}%".format(date)
+
+        if (title == None or date == None):
+            event_query_data = db.session.query(Events).filter(
+                or_(Events.start_date.like(like_date), Events.title.like(like_title)))
+            response_data = formatEvents(event_query_data)
+            return jsonify(response_data), 200
+        else:
+            event_query_data = db.session.query(Events).filter(
+                Events.start_date == date, Events.title == title)
+            response_data = formatEvents(event_query_data)
+            return jsonify(response_data), 200
+
+
+@app.route('/api/v2/search', methods=['POST'])
+@requires_auth
+def searchv2():
+    if request.method == 'POST':
+
+        data = request.get_json()
+        title = data["title"]
+        date = data["startdate"]
+        like_title = "%{}%".format(title)
+        like_date = "%{}%".format(date)
+
+        if (title == None or date == None):
+            event_query_data = db.session.query(Events).filter(
+                or_(Events.start_date.like(like_date), Events.title.like(like_title)))
+            response_data = formatEvents(event_query_data)
+            return jsonify(response_data), 200
+        else:
+            event_query_data = db.session.query(Events).filter(
+                Events.start_date == date, Events.title == title)
+            response_data = formatEvents(event_query_data)
+            return jsonify(response_data), 200
 
 
 @app.route('/uploads/<filename>')
@@ -399,20 +425,20 @@ def send_text_file(file_name):
     return app.send_static_file(file_dot_text)
 
 
-@app.after_request
-def add_header(response):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also tell the browser not to cache the rendered page. If we wanted
-    to we could change max-age to 600 seconds which would be 10 minutes.
-    """
-    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
-    response.headers['Cache-Control'] = 'public, max-age=0'
-    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8080'
-    response.headers['Access-Control-Allow-Headers'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET,POST,PATCH,DELETE'
-    response.headers['Access-Control-Allow-Credentials'] = 'true'
-    return response
+# @app.after_request
+# def add_header(response):
+#     """
+#     Add headers to both force latest IE rendering engine or Chrome Frame,
+#     and also tell the browser not to cache the rendered page. If we wanted
+#     to we could change max-age to 600 seconds which would be 10 minutes.
+#     """
+#     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
+#     response.headers['Cache-Control'] = 'public, max-age=0'
+#     response.headers['Access-Control-Allow-Origin']= '*'
+#     response.headers['Access-Control-Allow-Headers']= '*'
+#     response.headers['Access-Control-Allow-Methods']= 'GET,POST,PATCH,DELETE'
+#     response.headers['Access-Control-Allow-Credentials']= 'true'
+#     return response
 
 
 @app.errorhandler(404)

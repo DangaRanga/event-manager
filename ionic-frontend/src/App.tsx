@@ -1,6 +1,7 @@
 import { Redirect, Route } from "react-router-dom";
 import {
   IonApp,
+  IonHeader,
   IonIcon,
   IonLabel,
   IonRouterOutlet,
@@ -8,9 +9,11 @@ import {
   IonTabButton,
   IonTabs,
   setupIonicReact,
+  IonToolbar,
+  IonTitle
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { ellipse, square, triangle } from "ionicons/icons";
+import { ellipse, home, layersOutline, personCircleOutline, search, square, triangle, wine, wineOutline } from 'ionicons/icons';
 
 // Component Imports
 import NavBar from "components/NavBar/NavBar";
@@ -42,10 +45,19 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import "react-toastify/dist/ReactToastify.css";
 
+import './App.css'
+
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
+
+    <IonHeader className='application-navigation'>
+      <IonToolbar>
+        <IonTitle>Navigation Bar</IonTitle>
+      </IonToolbar>
+    </IonHeader>
+
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
@@ -65,20 +77,30 @@ const App: React.FC = () => (
             <LoginPage />
           </Route>
         </IonRouterOutlet>
+
         <IonTabBar slot="bottom">
           <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon icon={triangle} />
+            <IonIcon icon={home} />
             <IonLabel>Tab 1</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
-          </IonTabButton>
+
           <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={square} />
+            <IonIcon icon={search} />
             <IonLabel>Tab 3</IonLabel>
           </IonTabButton>
+
+          <IonTabButton tab="tab2" href="/tab2">
+            <IonIcon icon={wineOutline} />
+            <IonLabel>Tab 2</IonLabel>
+          </IonTabButton>
+
+          <IonTabButton tab="tab3" href="/tab3">
+            <IonIcon icon={personCircleOutline} />
+            <IonLabel>Tab 2</IonLabel>
+          </IonTabButton>
+          
         </IonTabBar>
+        
       </IonTabs>
     </IonReactRouter>
     <ToastContainer

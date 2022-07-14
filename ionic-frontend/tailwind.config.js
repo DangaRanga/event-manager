@@ -1,7 +1,13 @@
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#D1410C",
+        primaryHover: "#D2643C",
+      },
+    },
   },
   plugins: [],
 };
+
